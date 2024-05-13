@@ -1,8 +1,98 @@
-.header1 {
-  color: green
+/* Global color variables */
+:root {
+  --blue: rgb(43, 159, 237);
+  --orange: rgb(247, 74, 5);
+  --body-bg-color: rgb(224, 224, 224);
+  --board-bg-color: rgb(214, 214, 214);
+  --board-shadow-color: rgb(117, 117, 117);
 }
 
-.header2 {
-  color: red
+/* Soft Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+body {
+  height: 100vh;
+  width: clamp(320px, 90%, 1000px);
+  margin: 0 auto;
+  background-color: var(--body-bg-color);
+}
+
+.score-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.score-container p {
+  font-size: 2rem;
+}
+
+.score-container p:first-child {
+  color: var(--orange);
+}
+
+.score-container p:last-child {
+  color: var(--blue);
+}
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 30px;
+  height: 100%;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  aspect-ratio: 1/1;
+  background-color: var(--board-bg-color);
+  box-shadow: 0px 8px 25px var(--board-shadow-color);
+  border-radius: 5px;
+}
+
+.board .cell {
+  position: relative;
+  width: 100%;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease-in;
+}
+
+.board .cell span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 5em;
+}
+
+.board .cell:hover {
+  box-shadow: 0px 2px 15px var(--board-shadow-color);
+}
+
+.buttons-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.buttons-container button {
+  font-size: 2rem;
+  border: 1px solid rgb(247, 74, 5);
+  background-color: transparent;
+  color: rgb(247, 74, 5);
+  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.5s ease-in-out;
+}
+
+.buttons-container button:hover {
+  transform: scale(1.05);
+}

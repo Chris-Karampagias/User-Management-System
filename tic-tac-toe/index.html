@@ -1,15 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tic Tac Toe</title>
-  <link rel="stylesheet" href="./style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tic Tac Toe</title>
+    <link rel="stylesheet" href="./style.css" />
 
-  <script src="./logic.js"></script>
-
-</head>
-<body>
-  <h1 class="header2 header1">Header</h1>
-</body>
+    <script src="./logic.js" defer></script>
+  </head>
+  <body>
+    <section class="wrapper">
+      <div class="score-container">
+        <p id="player1">Player1 : 0</p>
+        <p id="player2">Player2 : 0</p>
+      </div>
+      <div class="board">
+        <div class="cell"><span>O</span></div>
+        <div class="cell"><span>X</span></div>
+        <div class="cell"><span>X</span></div>
+        <div class="cell"><span>O</span></div>
+        <div class="cell"><span>O</span></div>
+        <div class="cell"><span>O</span></div>
+        <div class="cell"><span>X</span></div>
+        <div class="cell"><span>O</span></div>
+        <div class="cell"><span>X</span></div>
+      </div>
+      <div class="buttons-container">
+        <button id="restart">Restart</button>
+        <button id="clear">Clear</button>
+        <button id="start">Start</button>
+      </div>
+    </section>
+  </body>
 </html>
