@@ -16,7 +16,7 @@
 
 body {
   height: 100vh;
-  width: clamp(320px, 90%, 1000px);
+  width: clamp(320px, 90%, 700px);
   margin: 0 auto;
   background-color: var(--body-bg-color);
 }
