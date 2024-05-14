@@ -101,6 +101,16 @@ body {
   border-radius: 5px;
 }
 
+@keyframes pop {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.05);
+  }
+}
+
 .label-input-pair label::after {
   content: "*";
   margin-left: 1px;

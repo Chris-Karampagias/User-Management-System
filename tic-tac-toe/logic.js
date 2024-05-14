@@ -10,6 +10,7 @@ const inputsForm = document.getElementById("inputs");
 const CELL_SHADOW = "1px solid rgb(117, 117, 117)";
 const ORANGE = "rgb(247, 74, 5)";
 const BLUE = "rgb(43, 159, 237)";
+const NAME_ANIMATION = "0.3s infinite alternate pop";
 
 function PlayerFactory(name, id) {
   const symbol = id === 1 ? "X" : "O";
@@ -34,7 +35,7 @@ const app = (() => {
       markedBy: "",
       winningCombinations: [
         [0, 2],
-        [5, 7],
+        [4, 7],
       ],
     },
     2: {
@@ -160,6 +161,21 @@ const app = (() => {
     boardCells.forEach((cell) => {
       cell.style.pointerEvents = "auto";
     });
+  };
+
+  const removeNextPlayerNotification = () => {
+    firstPlayerScore.style.removeProperty("animation");
+    secondPlayerScore.style.removeProperty("animation");
+  };
+
+  const notifyNextPlayer = () => {
+    if (currentPlayer.symbol === "X") {
+      secondPlayerScore.style.removeProperty("animation");
+      firstPlayerScore.style.animation = NAME_ANIMATION;
+      return;
+    }
+    firstPlayerScore.style.removeProperty("animation");
+    secondPlayerScore.style.animation = NAME_ANIMATION;
   };
 
   const displayResult = (payload) => {
@@ -299,10 +315,14 @@ const app = (() => {
       disableCells();
       toggleRestartButtonDisplay();
       toggleClearButtonDisplay();
+      removeNextPlayerNotification();
       displayResult(payload);
     }
 
     swapPlayer();
+    if (!winnerFound && payload !== 1) {
+      notifyNextPlayer();
+    }
   };
 
   const reset = () => {
@@ -324,6 +344,7 @@ const app = (() => {
     toggleRestartButtonDisplay();
     toggleClearButtonDisplay();
     clearResult();
+    notifyNextPlayer();
   };
 
   const start = (e) => {
@@ -336,6 +357,7 @@ const app = (() => {
       initializePlayers(name1, name2);
       toggleInputsAndStartButton();
       enableCells();
+      notifyNextPlayer();
     }
   };
 
