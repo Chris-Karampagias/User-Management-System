@@ -1,1 +1,1 @@
-export { default as TwitterCardClass } from "./TwiiterCardClass";
+export { default as TwitterCardClass } from "./TwitterCardClass";
