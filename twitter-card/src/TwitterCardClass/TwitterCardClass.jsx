@@ -236,14 +236,25 @@ export default class TwitterCardClass extends React.Component {
   constructor(props) {
     super(props);
     this.state = initialState;
+    this.fetchUserInfo = this.fetchUserInfo.bind(this);
   }
 
-  componentDidMount() {
-    fetch(`https://jsonplaceholder.typicode.com/users/${this.props.userId}`, {
+  fetchUserInfo(userId) {
+    fetch(`https://jsonplaceholder.typicode.com/users/${userId}`, {
       method: "GET",
     })
       .then((response) => response.json())
       .then((userInfo) => this.setState(userInfo));
+  }
+
+  componentDidMount() {
+    this.fetchUserInfo(this.props.userId);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.userId !== this.props.userId) {
+      this.fetchUserInfo(this.props.userId);
+    }
   }
 
   render() {
