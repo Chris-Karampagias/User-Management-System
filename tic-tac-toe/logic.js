@@ -1,23 +1,23 @@
-const firstPlayerScore = document.getElementById("player1");
-const secondPlayerScore = document.getElementById("player2");
-const result = document.querySelector(".result");
-const boardCells = document.querySelectorAll(".cell");
-const buttonContainer = document.querySelector(".buttons-container");
-const restartButton = document.getElementById("restart");
-const clearButton = document.getElementById("clear");
-const startButton = document.getElementById("start");
-const inputsForm = document.getElementById("inputs");
-const CELL_SHADOW = "1px solid rgb(117, 117, 117)";
-const ORANGE = "rgb(247, 74, 5)";
-const BLUE = "rgb(43, 159, 237)";
-const NAME_ANIMATION = "0.3s infinite alternate pop";
-
-function PlayerFactory(name, id) {
-  const symbol = id === 1 ? "X" : "O";
-  return { name, symbol, score: 0 };
-}
-
 const app = (() => {
+  const firstPlayerScore = document.getElementById("player1");
+  const secondPlayerScore = document.getElementById("player2");
+  const result = document.querySelector(".result");
+  const boardCells = document.querySelectorAll(".cell");
+  const buttonContainer = document.querySelector(".buttons-container");
+  const restartButton = document.getElementById("restart");
+  const clearButton = document.getElementById("clear");
+  const startButton = document.getElementById("start");
+  const inputsForm = document.getElementById("inputs");
+  const CELL_SHADOW = "1px solid rgb(117, 117, 117)";
+  const ORANGE = "rgb(247, 74, 5)";
+  const BLUE = "rgb(43, 159, 237)";
+  const NAME_ANIMATION = "0.3s infinite alternate pop";
+
+  function PlayerFactory(name, id) {
+    const symbol = id === 1 ? "X" : "O";
+    return { name, symbol, score: 0 };
+  }
+
   let currentPlayer;
   let player1;
   let player2;
@@ -361,6 +361,16 @@ const app = (() => {
     }
   };
 
+  boardCells.forEach((cell, index) => {
+    cell.addEventListener("click", (e) => playRound(e, index));
+  });
+
+  restartButton.addEventListener("click", restart);
+
+  clearButton.addEventListener("click", reset);
+
+  inputsForm.addEventListener("submit", (e) => start(e));
+
   const init = () => {
     setCellBorders();
     disableCells();
@@ -374,15 +384,5 @@ const app = (() => {
     init,
   };
 })();
-
-boardCells.forEach((cell, index) => {
-  cell.addEventListener("click", (e) => app.playRound(e, index));
-});
-
-restartButton.addEventListener("click", app.restart);
-
-clearButton.addEventListener("click", app.reset);
-
-inputsForm.addEventListener("submit", (e) => app.start(e));
 
 app.init();
