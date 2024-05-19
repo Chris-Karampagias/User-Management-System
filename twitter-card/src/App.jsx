@@ -25,8 +25,8 @@ const twitterCardProps = {
 function App() {
   return (
     <>
-      <TwitterCardFunctional {...twitterCardProps} />
-      <TwitterCardClass />
+      {/* <TwitterCardFunctional {...twitterCardProps} /> */}
+      <TwitterCardClass {...twitterCardProps} />
     </>
   );
 }
