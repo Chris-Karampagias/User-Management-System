@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "./twitter-card-style.css";
 
 // Using static props
 

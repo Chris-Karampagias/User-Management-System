@@ -1,4 +1,5 @@
-import { TwitterCardClass } from "./TwitterCardClass";
+import "./TwitterCardFunctional/twitter-card-style.css";
+import { TwitterCardClass } from "./TwitterCardClass/TwitterCardClass";
 import { TwitterCardFunctional } from "./TwitterCardFunctional";
 import "./App.css";
 
@@ -42,7 +43,7 @@ function App() {
       {/* <TwitterCardFunctional {...twitterCardPropsWithoutAPI} /> */}
       {/* <TwitterCardClass {...twitterCardPropsWithoutAPI} /> */}
       {/* <TwitterCardFunctional {...twitterCardPropsWithAPI} /> */}
-      {/* <TwitterCardClass {...twitterCardPropsWithAPI} /> */}
+      <TwitterCardClass {...twitterCardPropsWithAPI} />
     </>
   );
 }

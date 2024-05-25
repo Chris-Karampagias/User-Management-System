@@ -232,7 +232,7 @@ const initialState = {
   username: "",
 };
 
-export default class TwitterCardClass extends React.Component {
+export class TwitterCardClass extends React.Component {
   constructor(props) {
     super(props);
     this.state = initialState;
