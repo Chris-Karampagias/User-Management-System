@@ -1,6 +1,6 @@
-import "./TwitterCardFunctional/twitter-card-style.css";
-import { TwitterCardClass } from "./TwitterCardClass/TwitterCardClass";
-import { TwitterCardFunctional } from "./TwitterCardFunctional";
+import "./components/TwitterCardFunctional/twitter-card-style.css";
+import { TwitterCardClass } from "./components";
+import { TwitterCardFunctional } from "./components";
 import "./App.css";
 
 const url = {
@@ -42,8 +42,8 @@ function App() {
     <>
       {/* <TwitterCardFunctional {...twitterCardPropsWithoutAPI} /> */}
       {/* <TwitterCardClass {...twitterCardPropsWithoutAPI} /> */}
-      {/* <TwitterCardFunctional {...twitterCardPropsWithAPI} /> */}
-      <TwitterCardClass {...twitterCardPropsWithAPI} />
+      <TwitterCardFunctional {...twitterCardPropsWithAPI} />
+      {/* <TwitterCardClass {...twitterCardPropsWithAPI} /> */}
     </>
   );
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import { withUser } from "../../hoc";
 
 // Using static props
 
@@ -227,34 +228,10 @@ import React from "react";
 
 // Using jsonplaceholder API
 
-const initialState = {
-  name: "",
-  username: "",
-};
 
-export class TwitterCardClass extends React.Component {
+class _TwitterCardClass extends React.Component {
   constructor(props) {
     super(props);
-    this.state = initialState;
-    this.fetchUserInfo = this.fetchUserInfo.bind(this);
-  }
-
-  fetchUserInfo(userId) {
-    fetch(`https://jsonplaceholder.typicode.com/users/${userId}`, {
-      method: "GET",
-    })
-      .then((response) => response.json())
-      .then((userInfo) => this.setState(userInfo));
-  }
-
-  componentDidMount() {
-    this.fetchUserInfo(this.props.userId);
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.userId !== this.props.userId) {
-      this.fetchUserInfo(this.props.userId);
-    }
   }
 
   render() {
@@ -292,7 +269,7 @@ export class TwitterCardClass extends React.Component {
             </svg>
             <div className="username-info">
               <div>
-                <h1>{this.state.name}</h1>
+                <h1>{this.props.user.name}</h1>
                 <svg
                   height="20"
                   viewBox="0 0 512 512"
@@ -305,7 +282,7 @@ export class TwitterCardClass extends React.Component {
                   />
                 </svg>
               </div>
-              <p>@{this.state.username}</p>
+              <p>@{this.props.user.username}</p>
             </div>
           </div>
           <svg
@@ -475,3 +452,7 @@ export class TwitterCardClass extends React.Component {
     );
   }
 }
+
+export const TwitterCardClass = withUser()(_TwitterCardClass);
+
+
