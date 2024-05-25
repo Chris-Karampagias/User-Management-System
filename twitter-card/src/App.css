@@ -8,15 +8,28 @@
   --light-black: rgb(71, 71, 71);
 }
 
-body {
-  height: 100vh;
-  box-sizing: border-box;
-}
-
 body,
 h1,
 p {
   margin: 0;
   padding: 0;
   line-height: 20px;
+}
+
+body {
+  height: 100vh;
+  box-sizing: border-box;
+  padding: 16px;
+}
+
+.d-flex {
+  display: flex;
+}
+
+.flex-wrap {
+  flex-wrap: wrap;
+}
+
+.gap-1 {
+  gap: 12px;
 }

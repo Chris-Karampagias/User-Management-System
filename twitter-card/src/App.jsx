@@ -1,4 +1,4 @@
-import "./components/TwitterCardFunctional/twitter-card-style.css";
+import "./styles/twitter-card-style.css";
 import { TwitterCardClass } from "./components";
 import { TwitterCardFunctional } from "./components";
 import "./App.css";
@@ -8,20 +8,6 @@ const url = {
 };
 
 url.label = url.target.split("https://")[1].split("/")[0];
-
-const twitterCardPropsWithoutAPI = {
-  user: "Twitter",
-  description: `Happy 3rd anniversary #TBT! See how &quot;Throwback Thursday&quot;
-  cemented its status as a weekly Twitter tradition:
-  blog.twitter.com/2015/history-o...`,
-  title: "History of #TBT on Twitter",
-  subtitle: "History of #TBT on Twitter",
-  url: url,
-  numOfHearts: 695,
-  numOfComments: 482,
-  dateCreated: "6:26 PM - Apr 30, 2015",
-  commentUrl: "https://x.com/?lang=en",
-};
 
 const twitterCardPropsWithAPI = {
   userId: 1,
@@ -40,10 +26,10 @@ const twitterCardPropsWithAPI = {
 function App() {
   return (
     <>
-      {/* <TwitterCardFunctional {...twitterCardPropsWithoutAPI} /> */}
-      {/* <TwitterCardClass {...twitterCardPropsWithoutAPI} /> */}
-      <TwitterCardFunctional {...twitterCardPropsWithAPI} />
-      {/* <TwitterCardClass {...twitterCardPropsWithAPI} /> */}
+      <div className="d-flex flex-wrap gap-1" >
+        <TwitterCardFunctional {...twitterCardPropsWithAPI} type="function"/>
+        <TwitterCardClass {...twitterCardPropsWithAPI} type="class"/>
+      </div>
     </>
   );
 }
