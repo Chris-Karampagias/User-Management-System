@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import "./styles/twitter-card-style.css";
+import { TwitterCardClass } from "./components";
+import { TwitterCardFunctional } from "./components";
+import "./App.css";
+
+const url = {
+  target: "https://x.com/?lang=en",
+};
+
+url.label = url.target.split("https://")[1].split("/")[0];
+
+const twitterCardPropsWithAPI = {
+  userId: 1,
+  description: `Happy 3rd anniversary #TBT! See how &quot;Throwback Thursday&quot;
+  cemented its status as a weekly Twitter tradition:
+  blog.twitter.com/2015/history-o...`,
+  title: "History of #TBT on Twitter",
+  subtitle: "History of #TBT on Twitter",
+  url: url,
+  numOfHearts: 695,
+  numOfComments: 482,
+  dateCreated: "6:26 PM - Apr 30, 2015",
+  commentUrl: "https://x.com/?lang=en",
+};
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+      <div className="d-flex flex-wrap gap-1" >
+        <TwitterCardFunctional {...twitterCardPropsWithAPI} type="function"/>
+        <TwitterCardClass {...twitterCardPropsWithAPI} type="class"/>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
