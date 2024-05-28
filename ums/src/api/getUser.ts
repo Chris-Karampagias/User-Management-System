@@ -1,5 +1,5 @@
 export default function getUsers(id: string) {
-  return fetch(`https://apis.stackprint.io/ums-api/users/${id}`, {
+  return fetch(`${import.meta.env.VITE_STACKPRINT_BASE_URL}users/${id}`, {
     method: "GET",
     headers: {
       "API-Key": import.meta.env.VITE_STACKPRINT_API_KEY,

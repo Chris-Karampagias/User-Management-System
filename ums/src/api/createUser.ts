@@ -1,7 +1,7 @@
 import { IuserData } from "./types/types";
 
 export default function createUser(userData: IuserData) {
-  return fetch("https://apis.stackprint.io/ums-api/users/", {
+  return fetch(`${import.meta.env.VITE_STACKPRINT_BASE_URL}users/`, {
     method: "POST",
     headers: {
       "API-Key": import.meta.env.VITE_STACKPRINT_API_KEY,
