@@ -13,7 +13,13 @@ export default function ControlledCheckbox({
         <Controller
           name={name}
           control={control}
-          render={({ field }) => <Checkbox />}
+          render={({ field }) => (
+            <Checkbox
+              {...field}
+              checked={field.value}
+              onChange={(e) => field.onChange(e.target.checked)}
+            />
+          )}
         />
       }
       label={label}
