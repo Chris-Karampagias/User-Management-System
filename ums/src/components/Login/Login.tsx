@@ -12,19 +12,28 @@ import getUser from "../../api/getUser";
 import { object, string, boolean } from "yup";
 import ControlledTextField from "../ControlledTextField";
 import ControlledCheckbox from "../ControlledCheckbox";
-import { findUser } from "../../utilities";
+import {
+  findUser,
+  setLocalStorageKeepMeLoggedIn,
+  setLocalStorageUser,
+} from "../../utilities";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { update } from "../../app/store";
+import { useNavigate } from "react-router-dom";
 
 const schema = object({
   username: string().required("Username is required"),
   password: string().min(6).required("Password is required"),
-  loggedIn: boolean(),
+  loggedIn: boolean().required(),
 });
 
 export default function Login({ users }: { users: IuserData[] }) {
   const [userId, setUserId] = useState<string | null>(null);
   const [validationError, setValidationError] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { handleSubmit, control, watch } = useForm<ILoginForm>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -47,12 +56,20 @@ export default function Login({ users }: { users: IuserData[] }) {
 
     if (!user || user.password !== data.password) {
       setValidationError(true);
-      return;
     } else {
       setUserId(user.id);
       setValidationError(false);
+      setLocalStorageKeepMeLoggedIn(data.loggedIn);
     }
   };
+
+  useEffect(() => {
+    if (user.data) {
+      dispatch(update(user.data));
+      setLocalStorageUser(user.data);
+      navigate("/home");
+    }
+  }, [user.data, dispatch, navigate]);
 
   return (
     <Paper elevation={2} sx={{ padding: "20px 0px" }}>
