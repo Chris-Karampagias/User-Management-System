@@ -13,7 +13,7 @@ export interface IuserData {
 export interface ILoginForm {
   username: string;
   password: string;
-  loggedIn?: boolean;
+  loggedIn: boolean;
 }
 
 export interface IControlledTextInput {
