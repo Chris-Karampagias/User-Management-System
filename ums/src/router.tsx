@@ -22,6 +22,11 @@ const router = createBrowserRouter([
     path: "/change-password",
     element: <ChangePassword />,
   },
+  {
+    //No match route
+    path: "*",
+    element: <Navigate to="/home" replace />,
+  },
 ]);
 
 export default router;
