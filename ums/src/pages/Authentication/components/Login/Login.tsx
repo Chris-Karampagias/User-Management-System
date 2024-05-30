@@ -5,23 +5,24 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import { ILoginForm, IuserData } from "../../api/types";
+import { ILoginForm } from "../../../../api/types";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import getUser from "../../api/getUser";
 import { object, string, boolean } from "yup";
-import ControlledTextField from "../ControlledTextField";
-import ControlledCheckbox from "../ControlledCheckbox";
+import ControlledTextField from "../../../../components/ControlledTextField";
+import ControlledCheckbox from "../../../../components/ControlledCheckbox";
 import {
   findUser,
   setLocalStorageKeepMeLoggedIn,
   setLocalStorageUser,
-} from "../../utilities";
-import { useQuery } from "@tanstack/react-query";
+} from "../../../../utilities";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { update } from "../../app/store";
+import { update } from "../../../../app/store";
 import { useNavigate } from "react-router-dom";
+import { useUsers } from "../../../../queries/useUsers";
+import { useUser } from "../../../../queries/useUser";
+import { RoutesConfig } from "../../../../router";
 
 const schema = object({
   username: string().required("Username is required"),
@@ -29,7 +30,8 @@ const schema = object({
   loggedIn: boolean().required(),
 });
 
-export default function Login({ users }: { users: IuserData[] }) {
+export function Login() {
+  const { users } = useUsers();
   const [userId, setUserId] = useState<string | null>(null);
   const [validationError, setValidationError] = useState(false);
   const navigate = useNavigate();
@@ -45,11 +47,7 @@ export default function Login({ users }: { users: IuserData[] }) {
   const usernameAndPasswordValues = watch(["username", "password"]);
   const isButtonDisabled = usernameAndPasswordValues.some((value) => !value);
 
-  const user = useQuery({
-    queryKey: ["user", userId],
-    queryFn: () => getUser(userId),
-    enabled: !!userId,
-  });
+const { user } = useUser(userId);
 
   const onSubmit = async (data: ILoginForm) => {
     const { user } = findUser(users, data.username);
@@ -64,12 +62,12 @@ export default function Login({ users }: { users: IuserData[] }) {
   };
 
   useEffect(() => {
-    if (user.data) {
-      dispatch(update(user.data));
-      setLocalStorageUser(user.data);
-      navigate("/home");
+    if (user) {
+      dispatch(update(user));
+      setLocalStorageUser(user);
+      navigate(RoutesConfig.home.browserRouter.path);
     }
-  }, [user.data, dispatch, navigate]);
+  }, [user, dispatch, navigate]);
 
   return (
     <Paper elevation={2} sx={{ padding: "20px 0px" }}>

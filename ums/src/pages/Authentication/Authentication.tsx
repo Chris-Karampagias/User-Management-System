@@ -1,9 +1,5 @@
-import { Login, SignUp } from "../../components";
-import getUsers from "../../api/getUsers";
-import { useQuery } from "@tanstack/react-query";
+import { Login } from "./components";
 
 export default function Authentication() {
-  const users = useQuery({ queryKey: ["users"], queryFn: getUsers });
-
-  return <Login users={users.data} />;
+  return <Login />;
 }
