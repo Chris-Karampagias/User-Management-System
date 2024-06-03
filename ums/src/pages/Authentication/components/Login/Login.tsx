@@ -12,7 +12,6 @@ import { object, string, boolean } from "yup";
 import ControlledTextField from "../../../../components/ControlledTextField";
 import ControlledCheckbox from "../../../../components/ControlledCheckbox";
 import {
-  findUser,
   setLocalStorageKeepMeLoggedIn,
   setLocalStorageUser,
 } from "../../../../utilities";
@@ -20,7 +19,6 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { update } from "../../../../app/store";
 import { useNavigate } from "react-router-dom";
-import { useUsers } from "../../../../queries/useUsers";
 import { useUser } from "../../../../queries/useUser";
 import { RoutesConfig } from "../../../../router";
 
@@ -31,9 +29,11 @@ const schema = object({
 });
 
 export function Login() {
-  const { users } = useUsers();
-  const [userId, setUserId] = useState<string | null>(null);
-  const [validationError, setValidationError] = useState(false);
+  const [loginDetails, setLoginDetails] = useState({
+    username: "",
+    password: "",
+    keepMeLoggedIn: false,
+  });
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { handleSubmit, control, watch } = useForm<ILoginForm>({
@@ -47,31 +47,38 @@ export function Login() {
   const usernameAndPasswordValues = watch(["username", "password"]);
   const isButtonDisabled = usernameAndPasswordValues.some((value) => !value);
 
-const { user } = useUser(userId);
+  const { user, error, isFetched, refetch } = useUser(
+    loginDetails.username,
+    loginDetails.password
+  );
 
   const onSubmit = async (data: ILoginForm) => {
-    const { user } = findUser(users, data.username);
-
-    if (!user || user.password !== data.password) {
-      setValidationError(true);
-    } else {
-      setUserId(user.id);
-      setValidationError(false);
-      setLocalStorageKeepMeLoggedIn(data.loggedIn);
-    }
+    setLoginDetails({
+      username: data.username,
+      password: data.password,
+      keepMeLoggedIn: data.loggedIn,
+    });
   };
 
   useEffect(() => {
     if (user) {
       dispatch(update(user));
       setLocalStorageUser(user);
+      setLocalStorageKeepMeLoggedIn(loginDetails.keepMeLoggedIn);
       navigate(RoutesConfig.home.browserRouter.path);
     }
-  }, [user, dispatch, navigate]);
+  }, [user, dispatch, navigate, loginDetails.keepMeLoggedIn, refetch]);
 
   return (
     <Paper elevation={2} sx={{ padding: "20px 0px" }}>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form
+        onSubmit={(e) => {
+          handleSubmit(onSubmit)(e);
+          if (isFetched) {
+            refetch();
+          }
+        }}
+      >
         <Stack alignItems={"center"} spacing={2}>
           <Typography variant="h2" fontSize={30}>
             Login
@@ -101,7 +108,7 @@ const { user } = useUser(userId);
               Log In
             </Button>
           </Stack>
-          {validationError && (
+          {error && (
             <Typography color={"error"}>
               Invalid Username or Password
             </Typography>
