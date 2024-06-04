@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Container } from "@mui/material";
 import { Provider } from "react-redux";
-import store from "./app/store";
+import store from "./app/store/store";
 import { AuthenticationChecker } from "./components";
 import "./index.css";
 
