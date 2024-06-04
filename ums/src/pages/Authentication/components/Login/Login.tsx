@@ -11,16 +11,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { object, string, boolean } from "yup";
 import ControlledTextField from "../../../../components/ControlledTextField";
 import ControlledCheckbox from "../../../../components/ControlledCheckbox";
-import {
-  setLocalStorageKeepMeLoggedIn,
-  setLocalStorageUser,
-} from "../../../../utilities";
+import { setLocalStorageKeepMeLoggedIn } from "../../../../utilities";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { update } from "../../../../app/store";
+import { updateUser } from "../../../../app/store/slices/userSlice";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../../../queries/useUser";
-import { RoutesConfig } from "../../../../router";
+import { routesConfig } from "../../../../app";
 
 const schema = object({
   username: string().required("Username is required"),
@@ -29,6 +26,7 @@ const schema = object({
 });
 
 export function Login() {
+  const [isManualFetching, setIsManualFetching] = useState(false);
   const [loginDetails, setLoginDetails] = useState({
     username: "",
     password: "",
@@ -47,7 +45,7 @@ export function Login() {
   const usernameAndPasswordValues = watch(["username", "password"]);
   const isButtonDisabled = usernameAndPasswordValues.some((value) => !value);
 
-  const { user, error, isFetched, refetch } = useUser(
+  const { user, error, isFetchingUser, isFetched, refetch } = useUser(
     loginDetails.username,
     loginDetails.password
   );
@@ -58,25 +56,29 @@ export function Login() {
       password: data.password,
       keepMeLoggedIn: data.loggedIn,
     });
+    setIsManualFetching(true);
   };
 
   useEffect(() => {
-    if (user) {
-      dispatch(update(user));
-      setLocalStorageUser(user);
-      setLocalStorageKeepMeLoggedIn(loginDetails.keepMeLoggedIn);
-      navigate(RoutesConfig.home.browserRouter.path);
+    if (isManualFetching) {
+      refetch();
+      setIsManualFetching(false);
     }
-  }, [user, dispatch, navigate, loginDetails.keepMeLoggedIn, refetch]);
+  }, [isManualFetching, refetch, user]);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(updateUser(user));
+      setLocalStorageKeepMeLoggedIn(loginDetails.keepMeLoggedIn);
+      navigate(routesConfig.home.browserRouter.path);
+    }
+  }, [user, dispatch, navigate, loginDetails.keepMeLoggedIn, refetch, error]);
 
   return (
     <Paper elevation={2} sx={{ padding: "20px 0px" }}>
       <form
         onSubmit={(e) => {
           handleSubmit(onSubmit)(e);
-          if (isFetched) {
-            refetch();
-          }
         }}
       >
         <Stack alignItems={"center"} spacing={2}>
@@ -99,16 +101,16 @@ export function Login() {
             name="loggedIn"
           />
           <Stack direction={"row"}>
-            {user?.isLoading && <CircularProgress />}
+            {isFetchingUser && <CircularProgress />}
             <Button
               variant="contained"
               type="submit"
-              disabled={isButtonDisabled || user?.isLoading}
+              disabled={isButtonDisabled || isFetchingUser}
             >
               Log In
             </Button>
           </Stack>
-          {error && (
+          {error && isFetched && (
             <Typography color={"error"}>
               Invalid Username or Password
             </Typography>

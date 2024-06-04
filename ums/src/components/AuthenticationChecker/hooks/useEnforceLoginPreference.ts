@@ -1,30 +1,43 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { findUser } from "../../../utilities";
-import { update } from "../../../app/store";
-import { useUsers } from "../../../queries/useUsers";
+import { updateUser } from "../../../app/store/slices/userSlice";
+import { useUser } from "../../../queries/useUser";
 
 export const useEnforceLoginPreference = () => {
   const [enforceLoginPreference, setEnforceLoginPreference] = useState(true);
   const dispatch = useDispatch();
+  const [userInfo, setUserInfo] = useState({
+    id: "",
+    username: "",
+    password: "",
+    fullName: "",
+    age: 0,
+    isPasswordSafe: false,
+    role: "regular",
+  });
 
-  const { users } = useUsers();
-  console.log(users)
+  const { user, refetch } = useUser(userInfo.username, userInfo.password);
 
   useEffect(() => {
-    if (enforceLoginPreference && users) {
-      console.log("first use effect");
+    if (userInfo.username) {
+      refetch();
+    }
+  }, [refetch, userInfo.username]);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(updateUser(user));
+    }
+  }, [dispatch, user]);
+
+  useEffect(() => {
+    if (enforceLoginPreference) {
       const keepMeLoggedIn = localStorage.getItem("keepMeLoggedIn");
       if (keepMeLoggedIn) {
         let currentUser = localStorage.getItem("user");
         if (currentUser) {
           currentUser = JSON.parse(currentUser);
-          const username = currentUser?.username;
-          const password = currentUser?.password;
-          const { user } = findUser(users, username);
-          if (user.password === password) {
-            dispatch(update(user));
-          }
+          setUserInfo(currentUser);
         } else {
           if (window.location.pathname !== "/authentication") {
             return window.location.replace("/authentication");
@@ -33,5 +46,5 @@ export const useEnforceLoginPreference = () => {
       }
       setEnforceLoginPreference(false);
     }
-  }, [dispatch, users, enforceLoginPreference]);
+  }, [dispatch, enforceLoginPreference]);
 };
