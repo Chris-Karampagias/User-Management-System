@@ -9,7 +9,7 @@ export default function ControlledTextField({
 }: IControlledTextInput) {
   return (
     <Controller
-      name={name}
+      name={name as "username" | "password"}
       control={control}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
         <TextField

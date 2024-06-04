@@ -11,7 +11,7 @@ export default function ControlledCheckbox({
     <FormControlLabel
       control={
         <Controller
-          name={name}
+          name={name as "loggedIn"}
           control={control}
           render={({ field }) => (
             <Checkbox
