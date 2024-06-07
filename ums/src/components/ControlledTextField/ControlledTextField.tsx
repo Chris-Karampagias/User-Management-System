@@ -6,6 +6,7 @@ export default function ControlledTextField({
   name,
   control,
   label,
+  type = 'text'
 }: IControlledTextInput) {
   return (
     <Controller
@@ -20,6 +21,7 @@ export default function ControlledTextField({
           label={label}
           required
           variant="standard"
+          type={type}
         />
       )}
     />

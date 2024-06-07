@@ -11,7 +11,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { object, string, boolean } from "yup";
 import ControlledTextField from "../../../../components/ControlledTextField";
 import ControlledCheckbox from "../../../../components/ControlledCheckbox";
-import { setLocalStorageKeepMeLoggedIn } from "../../../../utilities";
+import { setLocalStorageKeepMeLoggedIn, setLocalStorageUser } from "../../../../utilities";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { updateUser } from "../../../../app/store/slices/userSlice";
@@ -26,7 +26,6 @@ const schema = object({
 });
 
 export function Login() {
-  const [isManualFetching, setIsManualFetching] = useState(false);
   const [loginDetails, setLoginDetails] = useState({
     username: "",
     password: "",
@@ -45,10 +44,7 @@ export function Login() {
   const usernameAndPasswordValues = watch(["username", "password"]);
   const isButtonDisabled = usernameAndPasswordValues.some((value) => !value);
 
-  const { user, error, isFetchingUser, isFetched, refetch } = useUser(
-    loginDetails.username,
-    loginDetails.password
-  );
+  const { user, userIsError, userIsFetching, userIsFetched, userRefetch } = useUser();
 
   const onSubmit = async (data: ILoginForm) => {
     setLoginDetails({
@@ -56,23 +52,19 @@ export function Login() {
       password: data.password,
       keepMeLoggedIn: data.loggedIn,
     });
-    setIsManualFetching(true);
+
+    userRefetch(data.username, data.password);
   };
 
-  useEffect(() => {
-    if (isManualFetching) {
-      refetch();
-      setIsManualFetching(false);
-    }
-  }, [isManualFetching, refetch, user]);
 
   useEffect(() => {
     if (user) {
+      setLocalStorageUser(user);
       dispatch(updateUser(user));
       setLocalStorageKeepMeLoggedIn(loginDetails.keepMeLoggedIn);
       navigate(routesConfig.home.browserRouter.path);
     }
-  }, [user, dispatch, navigate, loginDetails.keepMeLoggedIn, refetch, error]);
+  }, [user, dispatch, navigate, loginDetails.keepMeLoggedIn, userIsError]);
 
   return (
     <Paper elevation={2} sx={{ padding: "20px 0px" }}>
@@ -94,6 +86,7 @@ export function Login() {
             label="Password"
             control={control}
             name="password"
+            type="password"
           />
           <ControlledCheckbox
             label="Keep me logged in"
@@ -101,16 +94,16 @@ export function Login() {
             name="loggedIn"
           />
           <Stack direction={"row"}>
-            {isFetchingUser && <CircularProgress />}
+            {userIsFetching && <CircularProgress />}
             <Button
               variant="contained"
               type="submit"
-              disabled={isButtonDisabled || isFetchingUser}
+              disabled={isButtonDisabled || userIsFetching}
             >
               Log In
             </Button>
           </Stack>
-          {error && isFetched && (
+          {userIsError && userIsFetched && (
             <Typography color={"error"}>
               Invalid Username or Password
             </Typography>

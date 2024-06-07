@@ -17,13 +17,13 @@ export const useEnforceLoginPreference = () => {
     role: "regular",
   });
 
-  const { user, refetch } = useUser(userInfo.username, userInfo.password);
+  const { user, userRefetch } = useUser();
 
   useEffect(() => {
-    if (userInfo.username) {
-      refetch();
+    if (userInfo.username && userInfo.password) {
+      userRefetch(userInfo.username, userInfo.password);
     }
-  }, [refetch, userInfo.username]);
+  }, [userRefetch, userInfo.username, userInfo.password]);
 
   useEffect(() => {
     if (user) {

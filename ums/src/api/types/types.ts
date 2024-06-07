@@ -20,6 +20,7 @@ export interface IControlledTextInput {
   name: string;
   control: Control<ILoginForm>;
   label: string;
+  type?: 'text' | 'password'
 }
 
 export interface IControlledCheckbox {
