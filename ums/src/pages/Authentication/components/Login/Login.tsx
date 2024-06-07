@@ -5,7 +5,7 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import { ILoginForm } from "../../../../api/types";
+import { ILoginForm, IuserData } from "../../../../api/types";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { object, string, boolean } from "yup";
@@ -14,10 +14,21 @@ import ControlledCheckbox from "../../../../components/ControlledCheckbox";
 import { setLocalStorageKeepMeLoggedIn, setLocalStorageUser } from "../../../../utilities";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { updateUser } from "../../../../app/store/slices/userSlice";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../../../../queries/useUser";
 import { routesConfig } from "../../../../app";
+import { updateUser } from "../../../../models/user/actions";
+
+const useUserXX = () => {
+  const dispatch = useDispatch();
+
+  const setUser = (user: IuserData) => {
+    setLocalStorageUser(user);
+    dispatch(updateUser(user));
+  }
+
+  return { setUser };
+}
 
 const schema = object({
   username: string().required("Username is required"),
@@ -26,13 +37,14 @@ const schema = object({
 });
 
 export function Login() {
+  const { setUser } = useUserXX();
+
   const [loginDetails, setLoginDetails] = useState({
     username: "",
     password: "",
     keepMeLoggedIn: false,
   });
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { handleSubmit, control, watch } = useForm<ILoginForm>({
     resolver: yupResolver(schema),
     defaultValues: {
@@ -59,12 +71,11 @@ export function Login() {
 
   useEffect(() => {
     if (user) {
-      setLocalStorageUser(user);
-      dispatch(updateUser(user));
+      setUser(user);
       setLocalStorageKeepMeLoggedIn(loginDetails.keepMeLoggedIn);
       navigate(routesConfig.home.browserRouter.path);
     }
-  }, [user, dispatch, navigate, loginDetails.keepMeLoggedIn, userIsError]);
+  }, [user, setUser, navigate, loginDetails.keepMeLoggedIn, userIsError]);
 
   return (
     <Paper elevation={2} sx={{ padding: "20px 0px" }}>

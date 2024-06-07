@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { updateUser } from "../../../app/store/slices/userSlice";
 import { useUser } from "../../../queries/useUser";
 import { IuserData } from "../../../api";
+import { updateUser } from "../../../models/user/actions";
 
 export const useEnforceLoginPreference = () => {
   const [enforceLoginPreference, setEnforceLoginPreference] = useState(true);
