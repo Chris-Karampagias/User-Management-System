@@ -1,16 +1,15 @@
 import { TextField } from "@mui/material";
 import { Controller } from "react-hook-form";
-import { IControlledTextInput } from "../../api/types";
 
 export default function ControlledTextField({
   name,
   control,
   label,
-  type = 'text'
-}: IControlledTextInput) {
+  type = "text",
+}) {
   return (
     <Controller
-      name={name as "username" | "password"}
+      name={name}
       control={control}
       render={({ field: { onChange, value }, fieldState: { error } }) => (
         <TextField

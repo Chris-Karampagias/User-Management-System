@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import getUser from "../api/getUser";
+import { getUser } from "../api";
 
 export const useUser = () => {
-  const [innerUsername, setInnerUserName] = useState('');
-  const [innerPassword, setInnerPassword] = useState('');
+  const [innerUsername, setInnerUserName] = useState("");
+  const [innerPassword, setInnerPassword] = useState("");
 
-  const userRefetch = (username: string, password: string) => {
+  const userRefetch = (username, password) => {
     setInnerUserName(username);
     setInnerPassword(password);
   };

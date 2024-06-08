@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useUser } from "../../../queries/useUser";
-import { IuserData } from "../../../api";
 import { updateUser } from "../../../models/user/actions";
 
 export const useEnforceLoginPreference = () => {
   const [enforceLoginPreference, setEnforceLoginPreference] = useState(true);
   const dispatch = useDispatch();
-  const [userInfo, setUserInfo] = useState<IuserData>({
+  const [userInfo, setUserInfo] = useState({
     id: "",
     username: "",
     password: "",
@@ -35,10 +34,10 @@ export const useEnforceLoginPreference = () => {
     if (enforceLoginPreference) {
       const keepMeLoggedIn = localStorage.getItem("keepMeLoggedIn");
       if (keepMeLoggedIn) {
-        let storedUser: IuserData | null = null;
+        let storedUser = null;
         const currentUser = localStorage.getItem("user");
         if (currentUser) {
-          storedUser = JSON.parse(currentUser) as IuserData;
+          storedUser = JSON.parse(currentUser);
           setUserInfo(storedUser);
         } else {
           if (window.location.pathname !== "/authentication") {

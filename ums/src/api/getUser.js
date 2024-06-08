@@ -1,4 +1,4 @@
-export default function getUser(username: string, password: string) {
+export function getUser(username, password) {
   let requestUrl;
   if (!password) {
     requestUrl = `${

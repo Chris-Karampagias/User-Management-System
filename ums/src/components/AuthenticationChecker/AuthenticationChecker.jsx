@@ -1,11 +1,6 @@
 import { useEnforceLoginPreference, useAmIloggedIn } from "./hooks";
-import { ReactNode } from "react";
 
-export default function AuthenticationChecker({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default function AuthenticationChecker({ children }) {
   useEnforceLoginPreference();
   useAmIloggedIn();
 

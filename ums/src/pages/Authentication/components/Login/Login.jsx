@@ -5,13 +5,15 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import { ILoginForm, IuserData } from "../../../../api/types";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { object, string, boolean } from "yup";
 import ControlledTextField from "../../../../components/ControlledTextField";
 import ControlledCheckbox from "../../../../components/ControlledCheckbox";
-import { setLocalStorageKeepMeLoggedIn, setLocalStorageUser } from "../../../../utilities";
+import {
+  setLocalStorageKeepMeLoggedIn,
+  setLocalStorageUser,
+} from "../../../../utilities";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -22,13 +24,13 @@ import { updateUser } from "../../../../models/user/actions";
 const useUserXX = () => {
   const dispatch = useDispatch();
 
-  const setUser = (user: IuserData) => {
+  const setUser = (user) => {
     setLocalStorageUser(user);
     dispatch(updateUser(user));
-  }
+  };
 
   return { setUser };
-}
+};
 
 const schema = object({
   username: string().required("Username is required"),
@@ -45,7 +47,7 @@ export function Login() {
     keepMeLoggedIn: false,
   });
   const navigate = useNavigate();
-  const { handleSubmit, control, watch } = useForm<ILoginForm>({
+  const { handleSubmit, control, watch } = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
       username: "",
@@ -56,9 +58,10 @@ export function Login() {
   const usernameAndPasswordValues = watch(["username", "password"]);
   const isButtonDisabled = usernameAndPasswordValues.some((value) => !value);
 
-  const { user, userIsError, userIsFetching, userIsFetched, userRefetch } = useUser();
+  const { user, userIsError, userIsFetching, userIsFetched, userRefetch } =
+    useUser();
 
-  const onSubmit = async (data: ILoginForm) => {
+  const onSubmit = async (data) => {
     setLoginDetails({
       username: data.username,
       password: data.password,
@@ -67,7 +70,6 @@ export function Login() {
 
     userRefetch(data.username, data.password);
   };
-
 
   useEffect(() => {
     if (user) {

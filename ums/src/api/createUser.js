@@ -1,6 +1,4 @@
-import { IuserData } from "./types/types";
-
-export default function createUser(userData: IuserData) {
+export function createUser(userData) {
   return fetch(`${import.meta.env.VITE_STACKPRINT_BASE_URL}users/`, {
     method: "POST",
     headers: {
