@@ -1,7 +1,7 @@
 import { Controller } from "react-hook-form";
 import { FormControlLabel, Checkbox } from "@mui/material";
 
-export default function ControlledCheckbox({ name, control, label }) {
+export default function ControlledCheckbox({ name, control, label, disabled }) {
   return (
     <FormControlLabel
       control={
@@ -12,6 +12,7 @@ export default function ControlledCheckbox({ name, control, label }) {
             <Checkbox
               {...field}
               checked={field.value}
+              disabled={disabled}
               onChange={(e) => field.onChange(e.target.checked)}
             />
           )}
