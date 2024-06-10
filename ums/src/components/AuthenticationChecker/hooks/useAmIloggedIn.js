@@ -1,20 +1,33 @@
 import { useEffect } from "react";
+import { useUserTools } from "../../../hooks";
+import { useIsPasswordSafe } from "../../../hooks";
 
 export const useAmIloggedIn = () => {
+  const { isUserLoggedIn, isUserAdmin } = useUserTools();
+  const isPasswordSafe = useIsPasswordSafe();
   useEffect(() => {
-    if (
-      !localStorage.getItem("user") &&
-      window.location.pathname !== "/authentication"
-    ) {
+    if (!isUserLoggedIn() && window.location.pathname !== "/authentication") {
       return window.location.replace("/authentication");
     }
 
-    if (
-      localStorage.getItem("user") &&
-      window.location.pathname === "/authentication"
-    ) {
-      return window.location.replace("/home");
+    if (isUserLoggedIn() && !isUserAdmin()) {
+      if (window.location.pathname === "/authentication") {
+        return window.location.replace("/home");
+      }
+
+      if (window.location.pathname !== "/change-password" && !isPasswordSafe) {
+        return window.location.replace("/change-password");
+      }
+
+      if (window.location.pathname === "/change-password" && isPasswordSafe) {
+        return window.location.replace("/home");
+      }
     }
-  }),
-    [window.location.pathname];
+
+    if (isUserLoggedIn() && isUserAdmin()) {
+      if (window.location.pathname === "/change-password") {
+        return window.location.replace("/home");
+      }
+    }
+  }, [isPasswordSafe, isUserLoggedIn, isUserAdmin]);
 };
