@@ -5,32 +5,17 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { useEffect, useState } from "react";
 import { object, string, boolean } from "yup";
 import ControlledTextField from "../../../../components/ControlledTextField";
 import ControlledCheckbox from "../../../../components/ControlledCheckbox";
-import {
-  setLocalStorageKeepMeLoggedIn,
-  setLocalStorageUser,
-} from "../../../../utilities";
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { useUser } from "../../../../queries/useUser";
 import { routesConfig } from "../../../../app";
-import { updateUser } from "../../../../models/user/actions";
-
-const useUserXX = () => {
-  const dispatch = useDispatch();
-
-  const setUser = (user) => {
-    setLocalStorageUser(user);
-    dispatch(updateUser(user));
-  };
-
-  return { setUser };
-};
+import { useUserTools } from "../../../../hooks";
+import { useIsPasswordSafe } from "../../../../hooks";
 
 const schema = object({
   username: string().required("Username is required"),
@@ -39,7 +24,8 @@ const schema = object({
 });
 
 export function Login() {
-  const { setUser } = useUserXX();
+  const { setUser, setUserLoggedInPreference } = useUserTools();
+  const isPasswordSafe = useIsPasswordSafe();
 
   const [loginDetails, setLoginDetails] = useState({
     username: "",
@@ -74,10 +60,21 @@ export function Login() {
   useEffect(() => {
     if (user) {
       setUser(user);
-      setLocalStorageKeepMeLoggedIn(loginDetails.keepMeLoggedIn);
-      navigate(routesConfig.home.browserRouter.path);
+      setUserLoggedInPreference(loginDetails.keepMeLoggedIn);
+      if (user.isPasswordSafe) {
+        navigate(routesConfig.home.browserRouter.path);
+      } else {
+        navigate(routesConfig.changePassword.browserRouter.path);
+      }
     }
-  }, [user, setUser, navigate, loginDetails.keepMeLoggedIn, userIsError]);
+  }, [
+    isPasswordSafe,
+    loginDetails.keepMeLoggedIn,
+    navigate,
+    setUser,
+    setUserLoggedInPreference,
+    user,
+  ]);
 
   return (
     <Paper elevation={2} sx={{ padding: "20px 0px" }}>
