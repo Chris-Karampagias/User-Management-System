@@ -1,3 +1,3 @@
-export default function AllUsers() {
+export function AllUsers() {
   return null;
 }

@@ -1,5 +1,5 @@
 import { Header } from "../../components";
 
-export default function Homepage() {
+export function Homepage() {
   return <Header />;
 }

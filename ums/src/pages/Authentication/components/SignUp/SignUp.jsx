@@ -11,8 +11,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import { object, string, boolean, number } from "yup";
-import ControlledTextField from "../../../../components/ControlledTextField";
-import ControlledCheckbox from "../../../../components/ControlledCheckbox";
+import { ControlledCheckbox } from "../../../../components/ControlledCheckbox";
+import { ControlledTextField } from "../../../../components";
 import { useUserTools } from "../../../../hooks";
 import { useUser } from "../../../../queries/useUser";
 import { routesConfig } from "../../../../app";
@@ -35,7 +35,7 @@ const schema = object({
   loggedIn: boolean().required(),
 });
 
-export default function SignUp() {
+export function SignUp() {
   const { setUser, setUserLoggedInPreference, isUserAdmin, isUserLoggedIn } =
     useUserTools();
   const {

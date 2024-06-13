@@ -2,7 +2,7 @@ import { Login, SignUp } from "./components";
 import { Stack, Divider, Typography } from "@mui/material";
 import { useUserTools } from "../../hooks";
 
-export default function Authentication() {
+export function Authentication() {
   const { isUserLoggedIn } = useUserTools();
   return (
     <Stack gap={10}>

@@ -1,1 +1,1 @@
-export { default } from "./AuthenticationChecker";
+export * from "./AuthenticationChecker";

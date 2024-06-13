@@ -1,4 +1,4 @@
-import { AllUsers, Authentication, ChangePassword, Homepage } from "../pages";
+import { AllUsers, Homepage, Authentication, ChangePassword } from "../pages";
 
 export const routesConfig = {
   home: {
