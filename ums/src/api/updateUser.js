@@ -1,13 +1,17 @@
-export function updateUser(id) {
-  return fetch(`${import.meta.env.VITE_STACKPRINT_BASE_URL}users/${id}`, {
-    method: "PUT",
-    headers: {
-      "API-Key": import.meta.env.VITE_STACKPRINT_API_KEY,
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-  })
+export function updateUser(userData) {
+  console.log(userData.id);
+  return fetch(
+    `${import.meta.env.VITE_STACKPRINT_BASE_URL}users/${userData.id}`,
+    {
+      method: "PUT",
+      headers: {
+        "API-Key": import.meta.env.VITE_STACKPRINT_API_KEY,
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    }
+  )
     .then((response) => response.json())
-    .then((user) => user)
     .catch((error) => error);
 }
