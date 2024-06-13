@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
-import { object, string, boolean, number } from "yup";
+import { object, string, boolean, number, ref } from "yup";
 import { ControlledCheckbox } from "../../../../components/ControlledCheckbox";
 import { ControlledTextField } from "../../../../components";
 import { useUserTools } from "../../../../hooks";
@@ -19,8 +19,14 @@ import { routesConfig } from "../../../../app";
 
 const schema = object({
   username: string().required("Username is required"),
-  password: string().min(6).required("Password is required"),
-  confirmPassword: string().min(6).required("Please confirm your password"),
+  password: string()
+    .min(6)
+    .oneOf([ref("confirmPassword"), null], "Passwords do not match")
+    .required("Password is required"),
+  confirmPassword: string()
+    .min(6)
+    .oneOf([ref("password"), null], "Passwords do not match")
+    .required("Please confirm your password"),
   fullName: string().required("Full name is required"),
   age: number()
     .transform((value, originalValue) => {
@@ -58,7 +64,6 @@ export function SignUp() {
     loggedIn: false,
   });
   const [userAlreadyExists, setUserAlreadyExists] = useState(false);
-  const [passwordsDoNotMatch, setPasswordsDoNotMatch] = useState(false);
 
   const { handleSubmit, control, watch } = useForm({
     resolver: yupResolver(schema),
@@ -80,15 +85,8 @@ export function SignUp() {
     "age",
   ]);
   const isSubmitDisabled = watchedFields.some((field) => !field);
-  const passwordField = watchedFields[1];
-  const confirmPasswordField = watchedFields[2];
 
   const onSubmit = (data) => {
-    if (passwordField !== confirmPasswordField) {
-      setPasswordsDoNotMatch(true);
-    } else {
-      setPasswordsDoNotMatch(false);
-    }
     setUserInfo({
       ...userInfo,
       id: uuid(),
@@ -191,9 +189,6 @@ export function SignUp() {
           </Stack>
           {userAlreadyExists && userIsFetched && (
             <Typography color={"error"}>Username is taken</Typography>
-          )}
-          {passwordsDoNotMatch && userIsFetched && (
-            <Typography color={"error"}>Passwords do not match</Typography>
           )}
         </Stack>
       </form>
