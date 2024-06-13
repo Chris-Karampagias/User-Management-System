@@ -36,7 +36,6 @@ export function ChangePassword() {
   const { updatedUser, isUpdatingUser, updateUserFromData } = useUser();
   const navigate = useNavigate();
   const currentUser = useSelector(userSelector);
-  console.log(currentUser);
   const { setUser } = useUserTools();
 
   const { handleSubmit, control, watch } = useForm({

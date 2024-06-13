@@ -1,5 +1,4 @@
 export function updateUser(userData) {
-  console.log(userData.id);
   return fetch(
     `${import.meta.env.VITE_STACKPRINT_BASE_URL}users/${userData.id}`,
     {
