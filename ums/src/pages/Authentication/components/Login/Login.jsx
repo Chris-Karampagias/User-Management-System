@@ -44,10 +44,9 @@ export function Login() {
   const usernameAndPasswordValues = watch(["username", "password"]);
   const isButtonDisabled = usernameAndPasswordValues.some((value) => !value);
 
-  const { user, userIsError, userIsFetching, userIsFetched, userRefetch } =
-    useUser();
+  const { user, userIsFetching, userIsFetched, userRefetch } = useUser();
 
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
     setLoginDetails({
       username: data.username,
       password: data.password,
@@ -113,7 +112,7 @@ export function Login() {
               Log In
             </Button>
           </Stack>
-          {userIsError && userIsFetched && (
+          {!user && userIsFetched && (
             <Typography color={"error"}>
               Invalid Username or Password
             </Typography>
