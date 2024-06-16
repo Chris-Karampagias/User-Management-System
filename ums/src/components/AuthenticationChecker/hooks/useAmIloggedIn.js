@@ -16,7 +16,8 @@ export const useAmIloggedIn = () => {
       }
 
       if (window.location.pathname !== "/change-password" && !isPasswordSafe) {
-        return window.location.replace("/change-password");
+        history.pushState(null, null, window.location.href);
+        return (window.location.href = "/change-password");
       }
 
       if (window.location.pathname === "/change-password" && isPasswordSafe) {

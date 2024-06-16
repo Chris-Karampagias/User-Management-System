@@ -10,8 +10,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect, useState } from "react";
 import { object, string, boolean } from "yup";
-import ControlledTextField from "../../../../components/ControlledTextField";
-import ControlledCheckbox from "../../../../components/ControlledCheckbox";
+import { ControlledTextField } from "../../../../components";
+import { ControlledCheckbox } from "../../../../components";
 import { useUser } from "../../../../queries/useUser";
 import { routesConfig } from "../../../../app";
 import { useUserTools } from "../../../../hooks";
@@ -44,10 +44,9 @@ export function Login() {
   const usernameAndPasswordValues = watch(["username", "password"]);
   const isButtonDisabled = usernameAndPasswordValues.some((value) => !value);
 
-  const { user, userIsError, userIsFetching, userIsFetched, userRefetch } =
-    useUser();
+  const { user, userIsFetching, userIsFetched, userRefetch } = useUser();
 
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
     setLoginDetails({
       username: data.username,
       password: data.password,
@@ -113,7 +112,7 @@ export function Login() {
               Log In
             </Button>
           </Stack>
-          {userIsError && userIsFetched && (
+          {!user && userIsFetched && (
             <Typography color={"error"}>
               Invalid Username or Password
             </Typography>

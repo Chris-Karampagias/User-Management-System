@@ -10,9 +10,9 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
-import { object, string, boolean, number } from "yup";
-import ControlledTextField from "../../../../components/ControlledTextField";
-import ControlledCheckbox from "../../../../components/ControlledCheckbox";
+import { object, string, boolean, number, ref } from "yup";
+import { ControlledCheckbox } from "../../../../components/ControlledCheckbox";
+import { ControlledTextField } from "../../../../components";
 import { ControlledDropdown } from "../../../../components";
 import { useUserTools } from "../../../../hooks";
 import { useUser } from "../../../../queries/useUser";
@@ -87,7 +87,7 @@ const ROLE_OPTIONS = [
   { value: "admin", label: "Administrator" },
 ];
 
-export default function SignUp() {
+export function SignUp() {
   const { setUser, setUserLoggedInPreference, isUserAdmin, isUserLoggedIn } =
     useUserTools();
   const {
@@ -110,7 +110,6 @@ export default function SignUp() {
     loggedIn: false,
   });
   const [userAlreadyExists, setUserAlreadyExists] = useState(false);
-  const [passwordsDoNotMatch, setPasswordsDoNotMatch] = useState(false);
 
   const validationSchema = useMemo(
     () => generateSignUpValidationSchema(isUserAdmin()),
@@ -134,15 +133,8 @@ export default function SignUp() {
     "age",
   ]);
   const isSubmitDisabled = watchedFields.some((field) => !field);
-  const passwordField = watchedFields[1];
-  const confirmPasswordField = watchedFields[2];
 
   const onSubmit = (data) => {
-    if (passwordField !== confirmPasswordField) {
-      setPasswordsDoNotMatch(true);
-    } else {
-      setPasswordsDoNotMatch(false);
-    }
     setUserInfo({
       ...userInfo,
       id: uuid(),
@@ -167,11 +159,12 @@ export default function SignUp() {
       const { loggedIn, ...apiUserInfo } = userInfo;
       console.log(apiUserInfo);
       createUserFromData(apiUserInfo);
-      if (!isUserAdmin() || !isUserLoggedIn()) {
-        setUser(apiUserInfo);
-        setUserLoggedInPreference(loggedIn);
-        navigate(routesConfig.changePassword.browserRouter.path);
+      if (isUserAdmin()) {
+        return navigate(routesConfig.allUsers.browserRouter.path);
       }
+      setUser(apiUserInfo);
+      setUserLoggedInPreference(loggedIn);
+      navigate(routesConfig.home.browserRouter.path);
     }
   }, [
     createUserFromData,
@@ -256,9 +249,6 @@ export default function SignUp() {
           </Stack>
           {userAlreadyExists && userIsFetched && (
             <Typography color={"error"}>Username is taken</Typography>
-          )}
-          {passwordsDoNotMatch && userIsFetched && (
-            <Typography color={"error"}>Passwords do not match</Typography>
           )}
         </Stack>
       </form>

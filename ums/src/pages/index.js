@@ -1,4 +1,4 @@
-export { default as AllUsers } from "./AllUsers";
-export { default as ChangePassword } from "./ChangePassword";
-export { default as Homepage } from "./Homepage";
-export { default as Authentication } from "./Authentication";
+export * from "./AllUsers";
+export * from "./ChangePassword";
+export * from "./Homepage";
+export * from "./Authentication";

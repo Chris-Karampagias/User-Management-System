@@ -1,12 +1,7 @@
 import { TextField } from "@mui/material";
 import { Controller } from "react-hook-form";
 
-export default function ControlledTextField({
-  name,
-  control,
-  label,
-  type = "text",
-}) {
+export function ControlledTextField({ name, control, label, type = "text" }) {
   return (
     <Controller
       name={name}

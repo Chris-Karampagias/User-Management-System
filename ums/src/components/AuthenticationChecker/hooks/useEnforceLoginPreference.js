@@ -1,36 +1,21 @@
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { useUser } from "../../../queries/useUser";
-import { updateUser } from "../../../models/user/actions";
 import { useUserTools } from "../../../hooks";
+import { useUser } from "../../../queries/useUser";
 
 export const useEnforceLoginPreference = () => {
   const [enforceLoginPreference, setEnforceLoginPreference] = useState(true);
-  const dispatch = useDispatch();
-  const { removeUserAndPreference } = useUserTools();
-  const [userInfo, setUserInfo] = useState({
-    id: "",
-    username: "",
-    password: "",
-    fullName: "",
-    age: 0,
-    isPasswordSafe: false,
-    role: "regular",
-  });
-
-  const { user, userRefetch } = useUser();
-
-  useEffect(() => {
-    if (userInfo.username && userInfo.password) {
-      userRefetch(userInfo.username, userInfo.password);
-    }
-  }, [userRefetch, userInfo.username, userInfo.password]);
+  const { setUser, removeUserAndPreference } = useUserTools();
+  const { user, userRefetch, userIsFetched } = useUser();
 
   useEffect(() => {
     if (user) {
-      dispatch(updateUser(user));
+      setUser(user);
     }
-  }, [dispatch, user]);
+
+    if (!user && userIsFetched) {
+      removeUserAndPreference();
+    }
+  }, [removeUserAndPreference, setUser, user, userIsFetched]);
 
   useEffect(() => {
     if (enforceLoginPreference) {
@@ -40,12 +25,12 @@ export const useEnforceLoginPreference = () => {
         const currentUser = localStorage.getItem("user");
         if (currentUser) {
           storedUser = JSON.parse(currentUser);
-          setUserInfo(storedUser);
+          userRefetch(storedUser.username, storedUser.password);
         }
       } else {
         removeUserAndPreference();
       }
       setEnforceLoginPreference(false);
     }
-  }, [dispatch, enforceLoginPreference, removeUserAndPreference]);
+  }, [enforceLoginPreference, removeUserAndPreference, userRefetch]);
 };
