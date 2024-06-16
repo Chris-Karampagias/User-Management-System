@@ -22,9 +22,13 @@ const generateSignUpValidationSchema = (isUserAdmin) => {
   return isUserAdmin
     ? object({
         username: string().required("Username is required"),
-        password: string().min(6).required("Password is required"),
+        password: string()
+          .min(6)
+          .oneOf([ref("confirmPassword"), null], "Passwords do not match")
+          .required("Password is required"),
         confirmPassword: string()
           .min(6)
+          .oneOf([ref("password"), null], "Passwords do not match")
           .required("Please confirm your password"),
         fullName: string().required("Full name is required"),
         role: string().required("User role is required"),
@@ -42,9 +46,13 @@ const generateSignUpValidationSchema = (isUserAdmin) => {
       })
     : object({
         username: string().required("Username is required"),
-        password: string().min(6).required("Password is required"),
+        password: string()
+          .min(6)
+          .oneOf([ref("confirmPassword"), null], "Passwords do not match")
+          .required("Password is required"),
         confirmPassword: string()
           .min(6)
+          .oneOf([ref("password"), null], "Passwords do not match")
           .required("Please confirm your password"),
         fullName: string().required("Full name is required"),
         age: number()
