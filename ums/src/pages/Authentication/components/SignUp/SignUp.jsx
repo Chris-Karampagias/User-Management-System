@@ -109,11 +109,12 @@ export function SignUp() {
       setUserAlreadyExists(false);
       const { loggedIn, ...apiUserInfo } = userInfo;
       createUserFromData(apiUserInfo);
-      if (!isUserAdmin() || !isUserLoggedIn()) {
-        setUser(apiUserInfo);
-        setUserLoggedInPreference(loggedIn);
-        navigate(routesConfig.changePassword.browserRouter.path);
+      if (isUserAdmin()) {
+        return navigate(routesConfig.allUsers.browserRouter.path);
       }
+      setUser(apiUserInfo);
+      setUserLoggedInPreference(loggedIn);
+      navigate(routesConfig.home.browserRouter.path);
     }
   }, [
     createUserFromData,

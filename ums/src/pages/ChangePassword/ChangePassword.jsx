@@ -113,7 +113,7 @@ export function ChangePassword() {
               type="submit"
               disabled={isSubmitDisabled || isUpdatingUser}
             >
-              Sign Up
+              Update Password
             </Button>
           </Stack>
         </Stack>
