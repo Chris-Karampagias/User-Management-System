@@ -16,6 +16,8 @@ export function Header() {
   const isAllUsers = pathname === routesConfig.allUsers.browserRouter.path;
   const isChangePassword =
     pathname === routesConfig.changePassword.browserRouter.path;
+  const isAuthentication =
+    pathname === routesConfig.authentication.browserRouter.path;
   const pointerEvents = isChangePassword ? "none" : "auto";
   return (
     <Paper elevation={3} sx={{ padding: "15px", marginBottom: "20px" }}>
@@ -24,49 +26,69 @@ export function Header() {
         justifyContent={"space-between"}
         alignItems={"center"}
       >
-        <Link
-          to={routesConfig.home.browserRouter.path}
-          style={{ textDecoration: "none", color: "inherit", pointerEvents }}
-        >
-          <Typography component={"h1"}>UMS</Typography>
-        </Link>
+        <Stack>
+          <Link
+            to={routesConfig.home.browserRouter.path}
+            style={{ textDecoration: "none", color: "inherit", pointerEvents }}
+          >
+            <Typography component={"h1"} fontSize={24} color={"secondary"}>
+              UMS
+            </Typography>
+            {isUserLoggedIn() && (
+              <Typography>Welcome back, {user.username}</Typography>
+            )}
+          </Link>
+        </Stack>
+
         {isUserLoggedIn() && (
-          <>
-            <Typography>Welcome back, {user.username}</Typography>
-            <Stack direction={"row"} gap={"10px"} alignItems={"center"}>
-              <Link
-                to={routesConfig.home.browserRouter.path}
-                style={{
-                  textDecoration: isHome ? "underline black" : "none",
-                  color: "inherit",
-                  pointerEvents,
-                }}
-              >
-                <Typography>Home</Typography>
-              </Link>
-              {isUserAdmin() && (
-                <Link
-                  to={routesConfig.allUsers.browserRouter.path}
-                  style={{
-                    textDecoration: isAllUsers ? "underline black" : "none",
-                    color: "inherit",
-                    pointerEvents,
-                  }}
-                >
-                  <Typography>All Users</Typography>
-                </Link>
-              )}
+          <Stack direction={"row"} gap={"10px"} alignItems={"center"}>
+            <Link to={routesConfig.home.browserRouter.path}>
               <Button
-                color="error"
-                onClick={() => {
-                  removeUserAndPreference();
-                  navigate(routesConfig.authentication.browserRouter.path);
-                }}
+                disabled={isChangePassword}
+                size="small"
+                color={isHome ? "secondary" : "primary"}
               >
-                Log Out
+                Home
               </Button>
-            </Stack>
-          </>
+            </Link>
+            {isUserAdmin() && (
+              <>
+                <Link to={routesConfig.allUsers.browserRouter.path}>
+                  <Button
+                    disabled={isChangePassword}
+                    size="small"
+                    color={isAllUsers ? "secondary" : "primary"}
+                  >
+                    All Users
+                  </Button>
+                </Link>
+                <Link to={routesConfig.authentication.browserRouter.path}>
+                  <Button
+                    disabled={isChangePassword}
+                    size="small"
+                    color={isAuthentication ? "secondary" : "primary"}
+                  >
+                    Authentication
+                  </Button>
+                </Link>
+              </>
+            )}
+            <Button
+              color="error"
+              onClick={() => {
+                removeUserAndPreference();
+                if (!isAuthentication) {
+                  return navigate(
+                    routesConfig.authentication.browserRouter.path
+                  );
+                }
+
+                window.location.reload();
+              }}
+            >
+              Log Out
+            </Button>
+          </Stack>
         )}
       </Stack>
     </Paper>
