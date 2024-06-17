@@ -42,35 +42,45 @@ export function Header() {
 
         {isUserLoggedIn() && (
           <Stack direction={"row"} gap={"10px"} alignItems={"center"}>
-            <Link to={routesConfig.home.browserRouter.path}>
-              <Button
-                disabled={isChangePassword}
-                size="small"
-                color={isHome ? "secondary" : "primary"}
+            <Button
+              disabled={isChangePassword}
+              size="small"
+              color={isHome ? "secondary" : "primary"}
+            >
+              <Link
+                style={{ color: "inherit", textDecoration: "none" }}
+                to={routesConfig.home.browserRouter.path}
               >
                 Home
-              </Button>
-            </Link>
+              </Link>
+            </Button>
             {isUserAdmin() && (
               <>
-                <Link to={routesConfig.allUsers.browserRouter.path}>
-                  <Button
-                    disabled={isChangePassword}
-                    size="small"
-                    color={isAllUsers ? "secondary" : "primary"}
+                <Button
+                  disabled={isChangePassword}
+                  size="small"
+                  color={isAllUsers ? "secondary" : "primary"}
+                >
+                  <Link
+                    style={{ color: "inherit", textDecoration: "none" }}
+                    to={routesConfig.allUsers.browserRouter.path}
                   >
                     All Users
-                  </Button>
-                </Link>
-                <Link to={routesConfig.authentication.browserRouter.path}>
-                  <Button
-                    disabled={isChangePassword}
-                    size="small"
-                    color={isAuthentication ? "secondary" : "primary"}
+                  </Link>
+                </Button>
+
+                <Button
+                  disabled={isChangePassword}
+                  size="small"
+                  color={isAuthentication ? "secondary" : "primary"}
+                >
+                  <Link
+                    style={{ color: "inherit", textDecoration: "none" }}
+                    to={routesConfig.authentication.browserRouter.path}
                   >
                     Authentication
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
               </>
             )}
             <Button
