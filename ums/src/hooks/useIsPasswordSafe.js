@@ -1,12 +1,8 @@
-import { useUserTools } from "./useUserTools";
+import { useSelector } from "react-redux";
+import { userSelector } from "../models/user/selectors";
 
 export const useIsPasswordSafe = () => {
-  const { getUserInfo } = useUserTools();
-  const user = getUserInfo();
+  const user = useSelector(userSelector);
 
-  if (!user) {
-    return false;
-  }
-
-  return user.isPasswordSafe;
+  return !!user?.isPasswordSafe;
 };

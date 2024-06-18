@@ -34,13 +34,13 @@ export function Header() {
             <Typography component={"h1"} fontSize={24} color={"secondary"}>
               UMS
             </Typography>
-            {isUserLoggedIn() && (
+            {isUserLoggedIn && (
               <Typography>Welcome back, {user.username}</Typography>
             )}
           </Link>
         </Stack>
 
-        {isUserLoggedIn() && (
+        {isUserLoggedIn && (
           <Stack direction={"row"} gap={"10px"} alignItems={"center"}>
             <Button
               disabled={isChangePassword}
@@ -54,7 +54,7 @@ export function Header() {
                 Home
               </Link>
             </Button>
-            {isUserAdmin() && (
+            {isUserAdmin && (
               <>
                 <Button
                   disabled={isChangePassword}
@@ -90,10 +90,8 @@ export function Header() {
                 if (!isAuthentication) {
                   return navigate(
                     routesConfig.authentication.browserRouter.path
-                  );
+                  )
                 }
-
-                window.location.reload();
               }}
             >
               Log Out

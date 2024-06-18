@@ -120,11 +120,11 @@ export function SignUp() {
   const [userAlreadyExists, setUserAlreadyExists] = useState(false);
 
   const validationSchema = useMemo(
-    () => generateSignUpValidationSchema(isUserAdmin()),
+    () => generateSignUpValidationSchema(isUserAdmin),
     [isUserAdmin]
   );
   const formDefaultValues = useMemo(
-    () => generateFormDefaultValues(isUserAdmin()),
+    () => generateFormDefaultValues(isUserAdmin),
     [isUserAdmin]
   );
 
@@ -152,7 +152,7 @@ export function SignUp() {
       loggedIn: data.loggedIn,
       role: data.role ?? "regular",
       age: data.age,
-      isPasswordSafe: !isUserAdmin(),
+      isPasswordSafe: !isUserAdmin,
     });
     userRefetch(data.username);
   };
@@ -167,7 +167,7 @@ export function SignUp() {
       const { loggedIn, ...apiUserInfo } = userInfo;
       console.log(apiUserInfo);
       createUserFromData(apiUserInfo);
-      if (isUserAdmin()) {
+      if (isUserAdmin) {
         return navigate(routesConfig.allUsers.browserRouter.path);
       }
       setUser(apiUserInfo);
@@ -190,7 +190,7 @@ export function SignUp() {
     <Paper elevation={2} sx={{ padding: "20px 0px" }}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack alignItems={"center"} spacing={2}>
-          {!isUserAdmin() ? (
+          {!isUserAdmin ? (
             <Typography variant="h2" fontSize={30}>
               Sign Up
             </Typography>
@@ -234,9 +234,9 @@ export function SignUp() {
             label="Keep me logged in"
             control={control}
             name="loggedIn"
-            disabled={isUserAdmin()}
+            disabled={isUserAdmin}
           />
-          {isUserAdmin() && (
+          {isUserAdmin && (
             <ControlledDropdown
               name="role"
               control={control}

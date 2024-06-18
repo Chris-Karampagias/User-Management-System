@@ -1,36 +1,27 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useUserTools } from "../../../hooks";
 import { useUser } from "../../../queries/useUser";
+import { getLocalStorageCredentials, getLocalStorageKeepMeLoggedIn } from "../../../utilities";
 
 export const useEnforceLoginPreference = () => {
-  const [enforceLoginPreference, setEnforceLoginPreference] = useState(true);
-  const { setUser, removeUserAndPreference } = useUserTools();
   const { user, userRefetch, userIsFetched } = useUser();
+  const { setUser } = useUserTools();
 
   useEffect(() => {
-    if (user) {
+    const isKeepMeLoggedInSelected = getLocalStorageKeepMeLoggedIn();
+    if (isKeepMeLoggedInSelected) {
+      const userCredentials = getLocalStorageCredentials();
+
+      if(userCredentials) {
+        userRefetch(userCredentials.username, userCredentials.password);
+      }
+    }
+  }, [userRefetch]);
+  console.log(userIsFetched)
+
+  useEffect(() => {
+    if(user?.id && userIsFetched) {
       setUser(user);
     }
-
-    if (!user && userIsFetched) {
-      removeUserAndPreference();
-    }
-  }, [removeUserAndPreference, setUser, user, userIsFetched]);
-
-  useEffect(() => {
-    if (enforceLoginPreference) {
-      const keepMeLoggedIn = JSON.parse(localStorage.getItem("keepMeLoggedIn"));
-      if (keepMeLoggedIn) {
-        let storedUser = null;
-        const currentUser = localStorage.getItem("user");
-        if (currentUser) {
-          storedUser = JSON.parse(currentUser);
-          userRefetch(storedUser.username, storedUser.password);
-        }
-      } else {
-        removeUserAndPreference();
-      }
-      setEnforceLoginPreference(false);
-    }
-  }, [enforceLoginPreference, removeUserAndPreference, userRefetch]);
-};
+  }, [user, setUser, userIsFetched]);
+}

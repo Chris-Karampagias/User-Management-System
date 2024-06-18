@@ -6,7 +6,7 @@ export function Authentication() {
   const { isUserLoggedIn } = useUserTools();
   return (
     <Stack gap={10}>
-      {!isUserLoggedIn() && (
+      {!isUserLoggedIn && (
         <>
           <Login />
           <Divider component={"h3"} sx={{ opacity: 0.6 }}>

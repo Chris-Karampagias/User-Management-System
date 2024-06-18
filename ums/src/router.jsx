@@ -4,7 +4,7 @@ import { Layout } from "./components";
 
 const routes = Object.values(routesConfig).map((route) => route.browserRouter);
 
-const router = createBrowserRouter([
+export const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
@@ -22,5 +22,3 @@ const router = createBrowserRouter([
     ],
   },
 ]);
-
-export default router;

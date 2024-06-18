@@ -49,6 +49,7 @@ export function Login() {
 
   useEffect(() => {
     if (user) {
+      console.log(33333)
       setUser(user);
       setUserLoggedInPreference(loggedIn);
       if (user.isPasswordSafe) {

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
+import { queryClient } from '../queryClient';
 import { getUser, createUser, updateUser } from "../api";
 
 export const useUser = () => {
@@ -22,6 +23,10 @@ export const useUser = () => {
     refetchOnWindowFocus: false,
   });
 
+  const clearUserQuery = () => {
+    queryClient.cancelQueries(["user", innerUsername, innerPassword])
+  }
+
   const { isPending: isCreatingUser, mutate: createUserFromData } = useMutation(
     { mutationFn: createUser }
   );
@@ -43,5 +48,6 @@ export const useUser = () => {
     isUpdatingUser,
     updateUserFromData,
     updatedUser,
+    clearUserQuery
   };
 };

@@ -1,45 +1,32 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   setLocalStorageKeepMeLoggedIn,
-  setLocalStorageUser,
+  setLocalStorageCredentials,
 } from "../utilities";
 import { updateUser, clearUser } from "../models/user/actions";
+import { userSelector } from "../models/user/selectors";
+import { useUser } from "../queries/useUser";
 
 export const useUserTools = () => {
   const dispatch = useDispatch();
+  const { clearUserQuery } = useUser();
+  const user = useSelector(userSelector);
+  const isUserAdmin = user?.role === 'admin';
+  const isUserLoggedIn = !!user?.id;
 
   const setUser = (user) => {
-    setLocalStorageUser(user);
+    setLocalStorageCredentials({username: user.username, password: user.password});
     dispatch(updateUser(user));
   };
 
   const removeUserAndPreference = () => {
     localStorage.clear();
     dispatch(clearUser());
+    clearUserQuery()
   };
 
   const setUserLoggedInPreference = (preference) => {
     setLocalStorageKeepMeLoggedIn(preference);
-  };
-
-  const isUserLoggedIn = () => {
-    return localStorage.getItem("user");
-  };
-
-  const getUserInfo = () => {
-    let user = localStorage.getItem("user");
-    if (!user) {
-      return null;
-    }
-    return JSON.parse(user);
-  };
-
-  const isUserAdmin = () => {
-    const user = getUserInfo();
-    if (!user) {
-      return false;
-    }
-    return user.role === "admin";
   };
 
   return {
@@ -48,6 +35,6 @@ export const useUserTools = () => {
     setUserLoggedInPreference,
     isUserLoggedIn,
     isUserAdmin,
-    getUserInfo,
+    user,
   };
 };
