@@ -1,6 +1,6 @@
 export function updateUser(userData) {
   return fetch(
-    `${import.meta.env.VITE_STACKPRINT_BASE_URL}users/${userData.id}`,
+    `${import.meta.env.VITE_STACKPRINT_BASE_URL}/users/${userData.id}`,
     {
       method: "PUT",
       headers: {

@@ -3,11 +3,11 @@ export function getUser(username, password) {
   if (!password) {
     requestUrl = `${
       import.meta.env.VITE_STACKPRINT_BASE_URL
-    }users?username=${username}`;
+    }/users?username=${username}`;
   } else {
     requestUrl = `${
       import.meta.env.VITE_STACKPRINT_BASE_URL
-    }users?username=${username}&password=${password}`;
+    }/users?username=${username}&password=${password}`;
   }
 
   return fetch(requestUrl, {

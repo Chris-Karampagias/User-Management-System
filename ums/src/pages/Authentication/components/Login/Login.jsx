@@ -8,7 +8,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { object, string, boolean } from "yup";
 import { ControlledTextField } from "../../../../components";
 import { ControlledCheckbox } from "../../../../components";
@@ -23,43 +23,34 @@ const schema = object({
   loggedIn: boolean().required(),
 });
 
+const defaultValues = {
+      username: "",
+      password: "",
+      loggedIn: false,
+    }
+
 export function Login() {
   const { setUser, setUserLoggedInPreference } = useUserTools();
   const isPasswordSafe = useIsPasswordSafe();
 
-  const [loginDetails, setLoginDetails] = useState({
-    username: "",
-    password: "",
-    keepMeLoggedIn: false,
-  });
   const navigate = useNavigate();
   const { handleSubmit, control, watch } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: {
-      username: "",
-      password: "",
-      loggedIn: false,
-    },
+    defaultValues,
   });
-  const usernameAndPasswordValues = watch(["username", "password"]);
-  const isButtonDisabled = usernameAndPasswordValues.some((value) => !value);
+  const [username, password, loggedIn] = watch(["username", "password", "loggedIn"])
+  const isButtonDisabled = !username || !password;
 
   const { user, userIsFetching, userIsFetched, userRefetch } = useUser();
 
   const onSubmit = (data) => {
-    setLoginDetails({
-      username: data.username,
-      password: data.password,
-      keepMeLoggedIn: data.loggedIn,
-    });
-
     userRefetch(data.username, data.password);
   };
 
   useEffect(() => {
     if (user) {
       setUser(user);
-      setUserLoggedInPreference(loginDetails.keepMeLoggedIn);
+      setUserLoggedInPreference(loggedIn);
       if (user.isPasswordSafe) {
         navigate(routesConfig.home.browserRouter.path);
       } else {
@@ -68,7 +59,7 @@ export function Login() {
     }
   }, [
     isPasswordSafe,
-    loginDetails.keepMeLoggedIn,
+    loggedIn,
     navigate,
     setUser,
     setUserLoggedInPreference,

@@ -1,5 +1,5 @@
-export function deleteUser() {
-  return fetch(`${import.meta.env.VITE_STACKPRINT_BASE_URL}users/${id}`, {
+export function deleteUser(id) {
+  return fetch(`${import.meta.env.VITE_STACKPRINT_BASE_URL}/users/${id}`, {
     method: "DELETE",
     headers: {
       "API-Key": import.meta.env.VITE_STACKPRINT_API_KEY,
