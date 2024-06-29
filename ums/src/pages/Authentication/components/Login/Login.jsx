@@ -24,10 +24,10 @@ const schema = object({
 });
 
 const defaultValues = {
-      username: "",
-      password: "",
-      loggedIn: false,
-    }
+  username: "",
+  password: "",
+  loggedIn: false,
+};
 
 export function Login() {
   const { setUser, setUserLoggedInPreference } = useUserTools();
@@ -38,7 +38,11 @@ export function Login() {
     resolver: yupResolver(schema),
     defaultValues,
   });
-  const [username, password, loggedIn] = watch(["username", "password", "loggedIn"])
+  const [username, password, loggedIn] = watch([
+    "username",
+    "password",
+    "loggedIn",
+  ]);
   const isButtonDisabled = !username || !password;
 
   const { user, userIsFetching, userIsFetched, userRefetch } = useUser();
@@ -49,7 +53,6 @@ export function Login() {
 
   useEffect(() => {
     if (user) {
-      console.log(33333)
       setUser(user);
       setUserLoggedInPreference(loggedIn);
       if (user.isPasswordSafe) {

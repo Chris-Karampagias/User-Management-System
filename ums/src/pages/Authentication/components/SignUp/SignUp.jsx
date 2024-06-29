@@ -165,7 +165,6 @@ export function SignUp() {
     if (userInfo.username && userIsFetched) {
       setUserAlreadyExists(false);
       const { loggedIn, ...apiUserInfo } = userInfo;
-      console.log(apiUserInfo);
       createUserFromData(apiUserInfo);
       if (isUserAdmin) {
         return navigate(routesConfig.allUsers.browserRouter.path);
