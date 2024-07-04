@@ -1,15 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
-// import { queryClient } from "../queryClient";
 import { getUser, createUser, updateUser } from "../api";
-import { userSelector } from "../models/user/selectors";
 import { useQueryClient } from "@tanstack/react-query";
 
 export const useUser = () => {
   const [innerUsername, setInnerUserName] = useState("");
   const [innerPassword, setInnerPassword] = useState(null);
-  const currentUser = useSelector(userSelector);
+  const [ isEnabled, setIsEnabled ] = useState(false)
   const queryClient = useQueryClient();
 
   const {
@@ -17,19 +14,29 @@ export const useUser = () => {
     isFetching: userIsFetching,
     isFetched: userIsFetched,
   } = useQuery({
-    queryKey: ["user", innerUsername, innerPassword],
+    queryKey: ["user"],
     queryFn: () => getUser(innerUsername, innerPassword),
-    enabled: !!innerUsername,
+    enabled: isEnabled,
   });
 
+  const userDoesNotExists = user?.length === 0;
+
+  useEffect(() => {
+    if(userDoesNotExists && isEnabled) {
+      setIsEnabled(false);
+    }
+  }, [userDoesNotExists, isEnabled])
+
   const userRefetch = (username, password = null) => {
+    setIsEnabled(true);
     setInnerUserName(username);
     setInnerPassword(password);
   };
 
   const clearUserQuery = () => {
+    setIsEnabled(false);
     queryClient.removeQueries({
-      queryKey: ["user", currentUser.username, currentUser.password],
+      queryKey: ["user"],
     });
   };
 

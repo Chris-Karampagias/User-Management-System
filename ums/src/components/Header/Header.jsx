@@ -19,6 +19,7 @@ export function Header() {
   const isAuthentication =
     pathname === routesConfig.authentication.browserRouter.path;
   const pointerEvents = isChangePassword ? "none" : "auto";
+
   return (
     <Paper elevation={3} sx={{ padding: "15px", marginBottom: "20px" }}>
       <Stack
