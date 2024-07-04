@@ -11,18 +11,21 @@ export const useUserTools = () => {
   const dispatch = useDispatch();
   const { clearUserQuery } = useUser();
   const user = useSelector(userSelector);
-  const isUserAdmin = user?.role === 'admin';
+  const isUserAdmin = user?.role === "admin";
   const isUserLoggedIn = !!user?.id;
 
   const setUser = (user) => {
-    setLocalStorageCredentials({username: user.username, password: user.password});
+    setLocalStorageCredentials({
+      username: user.username,
+      password: user.password,
+    });
     dispatch(updateUser(user));
   };
 
   const removeUserAndPreference = () => {
+    clearUserQuery();
     localStorage.clear();
     dispatch(clearUser());
-    clearUserQuery()
   };
 
   const setUserLoggedInPreference = (preference) => {
