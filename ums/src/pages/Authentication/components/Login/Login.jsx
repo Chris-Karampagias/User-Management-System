@@ -52,7 +52,7 @@ export function Login() {
   };
 
   useEffect(() => {
-    if (user) {
+    if (user && username) {
       setUser(user);
       setUserLoggedInPreference(loggedIn);
       if (user.isPasswordSafe) {
@@ -68,6 +68,7 @@ export function Login() {
     setUser,
     setUserLoggedInPreference,
     user,
+    username,
   ]);
 
   return (
