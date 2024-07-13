@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
   Button,
@@ -13,8 +12,7 @@ import { useSelector } from "react-redux";
 import { userSelector } from "../../models/user/selectors";
 import { object, string, ref } from "yup";
 import { ControlledTextField } from "../../components";
-import { useUser } from "../../queries/useUser";
-import { useUserTools } from "../../hooks";
+import { useEditUser } from "../../queries/useEditUser";
 
 const createValidationSchema = (oldPassword) => {
   return object({
@@ -33,10 +31,8 @@ const createValidationSchema = (oldPassword) => {
 
 export function ChangePassword() {
   const [validationSchema, setValidationSchema] = useState(null);
-  const { updatedUser, isUpdatingUser, updateUserFromData } = useUser();
-  const navigate = useNavigate();
   const currentUser = useSelector(userSelector);
-  const { setUser } = useUserTools();
+  const { editUser, isLoadingEditUser } = useEditUser();
 
   const { handleSubmit, control, watch } = useForm({
     resolver: yupResolver(validationSchema),
@@ -66,15 +62,8 @@ export function ChangePassword() {
       isPasswordSafe: true,
     };
 
-    updateUserFromData(updatedUserInfo);
+    editUser(updatedUserInfo);
   };
-
-  useEffect(() => {
-    if (updatedUser) {
-      setUser(updatedUser);
-      return navigate(-1);
-    }
-  }, [navigate, setUser, updatedUser]);
 
   return (
     <Paper elevation={2} sx={{ padding: "20px 0px" }}>
@@ -107,11 +96,11 @@ export function ChangePassword() {
             />
           </Stack>
           <Stack direction={"row"} columnGap={3}>
-            {isUpdatingUser && <CircularProgress />}
+            {isLoadingEditUser && <CircularProgress />}
             <Button
               variant="contained"
               type="submit"
-              disabled={isSubmitDisabled || isUpdatingUser}
+              disabled={isSubmitDisabled || isLoadingEditUser}
             >
               Update Password
             </Button>

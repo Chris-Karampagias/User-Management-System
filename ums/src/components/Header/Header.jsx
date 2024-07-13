@@ -1,16 +1,17 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Paper, Stack, Typography, Button } from "@mui/material";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { userSelector } from "../../models/user/selectors";
-import { useUserTools } from "../../hooks/useUserTools";
+import { userSelector, isUserAdminSelector } from "../../models/user/selectors";
 import { routesConfig } from "../../app";
+import { clearUser } from "../../models/user/actions";
 
 export function Header() {
+  const dispatch = useDispatch();
   const location = useLocation();
   const navigate = useNavigate();
-  const { isUserAdmin, isUserLoggedIn, removeUserAndPreference } =
-    useUserTools();
+  const isUserAdmin = useSelector(isUserAdminSelector);
   const user = useSelector(userSelector);
+  const isUserLoggedIn = !!user?.id;
   const pathname = location.pathname;
   const isHome = pathname === routesConfig.home.browserRouter.path;
   const isAllUsers = pathname === routesConfig.allUsers.browserRouter.path;
@@ -18,6 +19,8 @@ export function Header() {
     pathname === routesConfig.changePassword.browserRouter.path;
   const isAuthentication =
     pathname === routesConfig.authentication.browserRouter.path;
+  const isNewUser =
+    pathname === routesConfig.newUser.browserRouter.path;
   const pointerEvents = isChangePassword ? "none" : "auto";
 
   return (
@@ -71,6 +74,18 @@ export function Header() {
                 </Button>
 
                 <Button
+                  size="small"
+                  color={isNewUser ? "secondary" : "primary"}
+                >
+                  <Link
+                    style={{ color: "inherit", textDecoration: "none" }}
+                    to={routesConfig.newUser.browserRouter.path}
+                  >
+                    new User
+                  </Link>
+                </Button>
+
+                <Button
                   disabled={isChangePassword}
                   size="small"
                   color={isAuthentication ? "secondary" : "primary"}
@@ -87,7 +102,8 @@ export function Header() {
             <Button
               color="error"
               onClick={() => {
-                removeUserAndPreference();
+                localStorage.clear();
+                dispatch(clearUser());
                 if (!isAuthentication) {
                   return navigate(
                     routesConfig.authentication.browserRouter.path

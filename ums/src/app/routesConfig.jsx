@@ -1,4 +1,4 @@
-import { AllUsers, Homepage, Authentication, ChangePassword } from "../pages";
+import { AllUsers, ChangePassword, Homepage, Authentication, NewUser } from "../pages";
 
 export const routesConfig = {
   home: {
@@ -17,6 +17,15 @@ export const routesConfig = {
     },
     extraProps: {
       label: "Authentication",
+    },
+  },
+  newUser: {
+    browserRouter: {
+      path: "/new-user",
+      element: <NewUser />,
+    },
+    extraProps: {
+      label: "New User",
     },
   },
   allUsers: {

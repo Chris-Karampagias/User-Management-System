@@ -5,18 +5,17 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
-import { useEffect, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom";
 import { v4 as uuid } from "uuid";
 import { object, string, boolean, number, ref } from "yup";
 import { ControlledCheckbox } from "../../../../components/ControlledCheckbox";
 import { ControlledTextField } from "../../../../components";
 import { ControlledDropdown } from "../../../../components";
-import { useUserTools } from "../../../../hooks";
-import { useUser } from "../../../../queries/useUser";
-import { routesConfig } from "../../../../app";
+import { useSelector } from "react-redux";
+import { isUserAdminSelector } from "../../../../models/user/selectors";
+import { useSignUp } from "../../../../queries/useSignUp";
 
 const generateSignUpValidationSchema = (isUserAdmin) => {
   return isUserAdmin
@@ -95,18 +94,9 @@ const ROLE_OPTIONS = [
   { value: "admin", label: "Administrator" },
 ];
 
-export function SignUp() {
-  const { setUser, setUserLoggedInPreference, isUserAdmin, isUserLoggedIn } =
-    useUserTools();
-  const {
-    user,
-    userIsFetching,
-    userIsFetched,
-    userRefetch,
-    createUserFromData,
-    isCreatingUser,
-  } = useUser();
-  const navigate = useNavigate();
+// eslint-disable-next-line react/prop-types
+export function SignUp({ isForMyself }) {
+  const isUserAdmin = useSelector(isUserAdminSelector);
   const [userInfo, setUserInfo] = useState({
     id: "",
     username: "",
@@ -117,7 +107,8 @@ export function SignUp() {
     role: "regular",
     loggedIn: false,
   });
-  const [userAlreadyExists, setUserAlreadyExists] = useState(false);
+  const [userCreationError, setUserCreationError] = useState('');
+  const { signUpUser, isLoadingSignUp } = useSignUp(isForMyself, setUserCreationError);
 
   const validationSchema = useMemo(
     () => generateSignUpValidationSchema(isUserAdmin),
@@ -143,7 +134,7 @@ export function SignUp() {
   const isSubmitDisabled = watchedFields.some((field) => !field);
 
   const onSubmit = (data) => {
-    setUserInfo({
+    const newUser = {
       ...userInfo,
       id: uuid(),
       username: data.username,
@@ -153,38 +144,11 @@ export function SignUp() {
       role: data.role ?? "regular",
       age: data.age,
       isPasswordSafe: !isUserAdmin,
-    });
-    userRefetch(data.username);
-  };
+    };
 
-  useEffect(() => {
-    if (user && watchedFields.username) {
-      setUserAlreadyExists(true);
-      return;
-    }
-    if (userInfo.username && userIsFetched) {
-      setUserAlreadyExists(false);
-      const { loggedIn, ...apiUserInfo } = userInfo;
-      createUserFromData(apiUserInfo);
-      if (isUserAdmin) {
-        return navigate(routesConfig.allUsers.browserRouter.path);
-      }
-      setUser(apiUserInfo);
-      setUserLoggedInPreference(loggedIn);
-      navigate(routesConfig.home.browserRouter.path);
-    }
-  }, [
-    createUserFromData,
-    isUserAdmin,
-    isUserLoggedIn,
-    navigate,
-    setUser,
-    setUserLoggedInPreference,
-    user,
-    userInfo,
-    userIsFetched,
-    watchedFields.username,
-  ]);
+    setUserInfo(newUser);
+    signUpUser(newUser);
+  };
 
   return (
     <Paper elevation={2} sx={{ padding: "20px 0px" }}>
@@ -246,17 +210,17 @@ export function SignUp() {
           )}
 
           <Stack direction={"row"} columnGap={3}>
-            {userIsFetching && <CircularProgress />}
+            {isLoadingSignUp && <CircularProgress />}
             <Button
               variant="contained"
               type="submit"
-              disabled={isSubmitDisabled || userIsFetching || isCreatingUser}
+              disabled={isSubmitDisabled || isLoadingSignUp}
             >
               Sign Up
             </Button>
           </Stack>
-          {userAlreadyExists && userIsFetched && (
-            <Typography color={"error"}>Username is taken</Typography>
+          {!!userCreationError && (
+            <Typography color={"error"}>{userCreationError}</Typography>
           )}
         </Stack>
       </form>

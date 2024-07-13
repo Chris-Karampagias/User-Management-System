@@ -6,14 +6,13 @@ import {
   CircularProgress,
 } from "@mui/material";
 import { useSelector } from "react-redux";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { object, string, number, ref } from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { userSelector } from "../../models/user/selectors";
 import { ControlledTextField } from "../../components";
-import { useUser } from "../../queries/useUser";
-import { useUserTools } from "../../hooks";
+import { useEditUser } from "../../queries/useEditUser";
 
 const schema = object({
   username: string().required("Username is required"),
@@ -36,20 +35,15 @@ const schema = object({
 
 export function Homepage() {
   const user = useSelector(userSelector);
-  const { setUser } = useUserTools();
-  const {
-    updatedUser,
-    isUpdatingUser,
-    updateUserFromData,
-    resetUpdateUserQuery,
-  } = useUser();
   const [isEditing, setIsEditing] = useState(false);
   const { isPasswordSafe, id, age, ...formDefaultValues } = user;
+  const { editUser, isLoadingEditUser } = useEditUser();
   const {
     handleSubmit,
     control,
     reset: resetForm,
     formState: { isDirty },
+    setValue,
     watch,
   } = useForm({
     resolver: yupResolver(schema),
@@ -60,6 +54,15 @@ export function Homepage() {
     },
   });
 
+  useEffect(() => {
+    setValue('username', user.username);
+    setValue('fullName', user.fullName);
+    setValue('password', user.password);
+    setValue('confirmPassword', '');
+    setValue('age', user.age);
+    setValue('role', user.role);
+  }, [setValue, user]);
+
   const watchedFields = watch([
     "fullName",
     "password",
@@ -68,19 +71,11 @@ export function Homepage() {
   ]);
   const isSaveDisabled = watchedFields.some((field) => !field);
 
-  useEffect(() => {
-    if (updatedUser) {
-      setUser(updatedUser);
-      setIsEditing(false);
-      resetUpdateUserQuery();
-    }
-  }, [resetUpdateUserQuery, setUser, updatedUser]);
-
   const onSubmit = (data) => {
     // eslint-disable-next-line no-unused-vars
     const { confirmPassword, ...apiUserDataChunk } = data;
     const apiUserData = { id, isPasswordSafe, ...apiUserDataChunk };
-    updateUserFromData(apiUserData);
+    editUser(apiUserData);
   };
 
   return (
@@ -140,12 +135,12 @@ export function Homepage() {
           {isEditing && (
             <Stack direction="row" justifyContent="space-between">
               <Stack direction={"row"} gap={1}>
-                {isUpdatingUser && <CircularProgress />}
+                {isLoadingEditUser && <CircularProgress />}
                 <Button
                   variant="contained"
                   color="success"
                   type="submit"
-                  disabled={!isDirty || isUpdatingUser || isSaveDisabled}
+                  disabled={!isDirty || isLoadingEditUser || isSaveDisabled}
                 >
                   Save
                 </Button>
@@ -157,7 +152,7 @@ export function Homepage() {
                   resetForm();
                   setIsEditing(false);
                 }}
-                disabled={isUpdatingUser}
+                disabled={isLoadingEditUser}
               >
                 Cancel
               </Button>

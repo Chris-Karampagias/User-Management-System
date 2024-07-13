@@ -1,4 +1,4 @@
-export function setLocalStorageCredentials({username, password}) {
+export function setLocalStorageCredentials(username, password) {
   const stringifiedUser = JSON.stringify({username, password});
   localStorage.setItem("user", stringifiedUser);
 }
