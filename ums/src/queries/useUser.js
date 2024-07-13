@@ -6,7 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 export const useUser = () => {
   const [innerUsername, setInnerUserName] = useState("");
   const [innerPassword, setInnerPassword] = useState(null);
-  const [ isEnabled, setIsEnabled ] = useState(false)
+  const [isEnabled, setIsEnabled] = useState(false);
   const queryClient = useQueryClient();
 
   const {
@@ -22,10 +22,10 @@ export const useUser = () => {
   const userDoesNotExists = user?.length === 0;
 
   useEffect(() => {
-    if(userDoesNotExists && isEnabled) {
+    if (userDoesNotExists && isEnabled) {
       setIsEnabled(false);
     }
-  }, [userDoesNotExists, isEnabled])
+  }, [userDoesNotExists, isEnabled]);
 
   const userRefetch = (username, password = null) => {
     setIsEnabled(true);
@@ -48,6 +48,7 @@ export const useUser = () => {
     data: updatedUser,
     isPending: isUpdatingUser,
     mutate: updateUserFromData,
+    reset: resetUpdateUserQuery,
   } = useMutation({ mutationFn: updateUser });
 
   return {
@@ -61,6 +62,7 @@ export const useUser = () => {
     isUpdatingUser,
     updateUserFromData,
     updatedUser,
+    resetUpdateUserQuery,
     clearUserQuery,
   };
 };
