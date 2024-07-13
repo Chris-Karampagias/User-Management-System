@@ -158,7 +158,7 @@ export function SignUp() {
   };
 
   useEffect(() => {
-    if (user) {
+    if (user && watchedFields.username) {
       setUserAlreadyExists(true);
       return;
     }
@@ -183,6 +183,7 @@ export function SignUp() {
     user,
     userInfo,
     userIsFetched,
+    watchedFields.username,
   ]);
 
   return (
