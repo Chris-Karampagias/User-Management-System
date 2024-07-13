@@ -5,6 +5,8 @@ import {
   getLocalStorageCredentials,
   getLocalStorageKeepMeLoggedIn,
 } from "../../../utilities";
+import { router } from "../../../router";
+import { routesConfig } from "../../../app";
 
 export const useEnforceLoginPreference = () => {
   const { user, userRefetch } = useUser();
@@ -24,6 +26,7 @@ export const useEnforceLoginPreference = () => {
   useEffect(() => {
     if (user) {
       setUser(user);
+      router.navigate(routesConfig.home.browserRouter.path);
     }
   }, [user, setUser]);
 };
