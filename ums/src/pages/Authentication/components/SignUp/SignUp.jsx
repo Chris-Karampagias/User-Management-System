@@ -107,8 +107,11 @@ export function SignUp({ isForMyself }) {
     role: "regular",
     loggedIn: false,
   });
-  const [userCreationError, setUserCreationError] = useState('');
-  const { signUpUser, isLoadingSignUp } = useSignUp(isForMyself, setUserCreationError);
+  const [userCreationError, setUserCreationError] = useState("");
+  const { signUpUser, isLoadingSignUp } = useSignUp(
+    isForMyself,
+    setUserCreationError
+  );
 
   const validationSchema = useMemo(
     () => generateSignUpValidationSchema(isUserAdmin),
@@ -147,7 +150,7 @@ export function SignUp({ isForMyself }) {
     };
 
     setUserInfo(newUser);
-    signUpUser(newUser);
+    signUpUser(newUser).then();
   };
 
   return (

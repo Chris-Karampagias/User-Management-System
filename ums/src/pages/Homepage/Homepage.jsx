@@ -36,14 +36,15 @@ const schema = object({
 export function Homepage() {
   const user = useSelector(userSelector);
   const [isEditing, setIsEditing] = useState(false);
+  const [isFetchingData, setIsFetchingData] = useState(true);
   const { isPasswordSafe, id, age, ...formDefaultValues } = user;
-  const { editUser, isLoadingEditUser } = useEditUser();
+  const { editUser, isLoadingEditUser, editUserRequestFinished } =
+    useEditUser();
   const {
     handleSubmit,
     control,
     reset: resetForm,
     formState: { isDirty },
-    setValue,
     watch,
   } = useForm({
     resolver: yupResolver(schema),
@@ -55,13 +56,16 @@ export function Homepage() {
   });
 
   useEffect(() => {
-    setValue('username', user.username);
-    setValue('fullName', user.fullName);
-    setValue('password', user.password);
-    setValue('confirmPassword', '');
-    setValue('age', user.age);
-    setValue('role', user.role);
-  }, [setValue, user]);
+    if (user.id) {
+      setIsFetchingData(false);
+    }
+  }, [user.id]);
+
+  useEffect(() => {
+    if (editUserRequestFinished) {
+      setIsEditing(false);
+    }
+  }, [editUserRequestFinished]);
 
   const watchedFields = watch([
     "fullName",
@@ -75,10 +79,10 @@ export function Homepage() {
     // eslint-disable-next-line no-unused-vars
     const { confirmPassword, ...apiUserDataChunk } = data;
     const apiUserData = { id, isPasswordSafe, ...apiUserDataChunk };
-    editUser(apiUserData);
+    editUser(apiUserData).then();
   };
 
-  return (
+  return isFetchingData ? null : (
     <Paper elevation={2} sx={{ padding: "20px 10px" }}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Stack direction={"column"} gap={2}>
@@ -89,6 +93,7 @@ export function Homepage() {
             <Typography variant="h2" fontSize={20}>
               Your Info
             </Typography>
+            {isFetchingData && <CircularProgress size={"large"} />}
             <ControlledTextField
               label=""
               control={control}
