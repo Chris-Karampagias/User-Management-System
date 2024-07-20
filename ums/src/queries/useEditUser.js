@@ -1,24 +1,45 @@
-import { useMutation } from '@tanstack/react-query';
-import { useDispatch } from 'react-redux';
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 // import { useNavigate } from "react-router-dom";
-import { updateUser as updateUserApi } from '../api';
-import { updateUser } from '../models/user/actions';
+import { updateUser as updateUserApi } from "../api";
+import { updateUser } from "../models/user/actions";
+import { usePreviousLocationPathname } from "../hooks";
+import { routesConfig } from "../app";
+import { useCurrentPath } from "../hooks";
+import { setLocalStorageCredentials } from "../utilities";
 
 export const useEditUser = () => {
   const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { isHomePath } = useCurrentPath();
+  const previousPathname = usePreviousLocationPathname();
 
-  const { isPending: isLoadingEditUser, mutate: editUser, isSuccess: editUserRequestFinished } = useMutation({
+  const {
+    isPending: isLoadingEditUser,
+    mutateAsync: editUser,
+    isSuccess: editUserRequestFinished,
+  } = useMutation({
     mutationFn: (userData) => updateUserApi(userData),
-    onSuccess: user => {
+    onSuccess: (user) => {
+      setLocalStorageCredentials(user.username, user.password);
       dispatch(updateUser(user));
-      // navigate(-1);
-    }
+      if (
+        !isHomePath ||
+        previousPathname !== routesConfig.authentication.browserRouter.path
+      ) {
+        navigate(-1);
+      }
+
+      if (previousPathname === routesConfig.authentication.browserRouter.path) {
+        navigate(routesConfig.home.browserRouter.path);
+      }
+    },
   });
 
   return {
     isLoadingEditUser,
     editUser,
-    editUserRequestFinished
-  }
+    editUserRequestFinished,
+  };
 };

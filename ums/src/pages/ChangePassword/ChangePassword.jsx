@@ -62,7 +62,7 @@ export function ChangePassword() {
       isPasswordSafe: true,
     };
 
-    editUser(updatedUserInfo);
+    editUser(updatedUserInfo).then();
   };
 
   return (

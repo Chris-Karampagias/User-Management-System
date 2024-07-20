@@ -1,18 +1,25 @@
-import { useMutation } from '@tanstack/react-query';
-import { useDispatch } from 'react-redux';
+import { useMutation } from "@tanstack/react-query";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { createUser } from '../api';
-import { updateUser } from '../models/user/actions';
-import { routesConfig } from '../app';
-import { setLocalStorageCredentials, setLocalStorageKeepMeLoggedIn } from '../utilities';
+import { createUser } from "../api";
+import { updateUser } from "../models/user/actions";
+import { routesConfig } from "../app";
+import {
+  setLocalStorageCredentials,
+  setLocalStorageKeepMeLoggedIn,
+} from "../utilities";
 
 export const useSignUp = (isForMyself, setUserCreationError) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isPending: isLoadingSignUp, mutate: signUpUser, isSuccess: signUpRequestFinished } = useMutation({
+  const {
+    isPending: isLoadingSignUp,
+    mutateAsync: signUpUser,
+    isSuccess: signUpRequestFinished,
+  } = useMutation({
     // eslint-disable-next-line no-unused-vars
-    mutationFn: ({loggedIn, ...newUserData}) => createUser(newUserData),
+    mutationFn: ({ loggedIn, ...newUserData }) => createUser(newUserData),
     onSuccess: (user, userPayload) => {
       if (isForMyself) {
         dispatch(updateUser(user));
@@ -29,13 +36,13 @@ export const useSignUp = (isForMyself, setUserCreationError) => {
       }
     },
     onError: (e) => {
-      setUserCreationError(e.message || 'Something went wrong');
-    }
+      setUserCreationError(e.message || "Something went wrong");
+    },
   });
 
   return {
     isLoadingSignUp,
     signUpUser,
-    signUpRequestFinished
-  }
+    signUpRequestFinished,
+  };
 };
