@@ -1,27 +1,25 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Paper, Stack, Typography, Button } from "@mui/material";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { userSelector, isUserAdminSelector } from "../../models/user/selectors";
 import { routesConfig } from "../../app";
 import { clearUser } from "../../models/user/actions";
+import { useCurrentPath } from "../../hooks";
 
 export function Header() {
   const dispatch = useDispatch();
-  const location = useLocation();
   const navigate = useNavigate();
+  const {
+    isChangePasswordPath,
+    isAuthenticationPath,
+    isHomePath,
+    isAllUsersPath,
+    isNewUserPath,
+  } = useCurrentPath();
   const isUserAdmin = useSelector(isUserAdminSelector);
   const user = useSelector(userSelector);
   const isUserLoggedIn = !!user?.id;
-  const pathname = location.pathname;
-  const isHome = pathname === routesConfig.home.browserRouter.path;
-  const isAllUsers = pathname === routesConfig.allUsers.browserRouter.path;
-  const isChangePassword =
-    pathname === routesConfig.changePassword.browserRouter.path;
-  const isAuthentication =
-    pathname === routesConfig.authentication.browserRouter.path;
-  const isNewUser =
-    pathname === routesConfig.newUser.browserRouter.path;
-  const pointerEvents = isChangePassword ? "none" : "auto";
+  const pointerEvents = isChangePasswordPath ? "none" : "auto";
 
   return (
     <Paper elevation={3} sx={{ padding: "15px", marginBottom: "20px" }}>
@@ -43,13 +41,26 @@ export function Header() {
             )}
           </Link>
         </Stack>
-
+        {!isUserLoggedIn && (
+          <Button
+            disabled={isChangePasswordPath}
+            size="small"
+            color={isAuthenticationPath ? "secondary" : "primary"}
+          >
+            <Link
+              style={{ color: "inherit", textDecoration: "none" }}
+              to={routesConfig.authentication.browserRouter.path}
+            >
+              Authentication
+            </Link>
+          </Button>
+        )}
         {isUserLoggedIn && (
           <Stack direction={"row"} gap={"10px"} alignItems={"center"}>
             <Button
-              disabled={isChangePassword}
+              disabled={isChangePasswordPath}
               size="small"
-              color={isHome ? "secondary" : "primary"}
+              color={isHomePath ? "secondary" : "primary"}
             >
               <Link
                 style={{ color: "inherit", textDecoration: "none" }}
@@ -61,9 +72,9 @@ export function Header() {
             {isUserAdmin && (
               <>
                 <Button
-                  disabled={isChangePassword}
+                  disabled={isChangePasswordPath}
                   size="small"
-                  color={isAllUsers ? "secondary" : "primary"}
+                  color={isAllUsersPath ? "secondary" : "primary"}
                 >
                   <Link
                     style={{ color: "inherit", textDecoration: "none" }}
@@ -72,29 +83,15 @@ export function Header() {
                     All Users
                   </Link>
                 </Button>
-
                 <Button
                   size="small"
-                  color={isNewUser ? "secondary" : "primary"}
+                  color={isNewUserPath ? "secondary" : "primary"}
                 >
                   <Link
                     style={{ color: "inherit", textDecoration: "none" }}
                     to={routesConfig.newUser.browserRouter.path}
                   >
                     new User
-                  </Link>
-                </Button>
-
-                <Button
-                  disabled={isChangePassword}
-                  size="small"
-                  color={isAuthentication ? "secondary" : "primary"}
-                >
-                  <Link
-                    style={{ color: "inherit", textDecoration: "none" }}
-                    to={routesConfig.authentication.browserRouter.path}
-                  >
-                    Authentication
                   </Link>
                 </Button>
               </>
@@ -104,10 +101,10 @@ export function Header() {
               onClick={() => {
                 localStorage.clear();
                 dispatch(clearUser());
-                if (!isAuthentication) {
+                if (!isAuthenticationPath) {
                   return navigate(
                     routesConfig.authentication.browserRouter.path
-                  )
+                  );
                 }
               }}
             >
