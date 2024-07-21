@@ -10,8 +10,6 @@ export function useLoginPreferenceChecker(setIsLoadingLogin) {
   useEffect(() => {
     const keepMeLoggedIn = getLocalStorageKeepMeLoggedIn();
     const { username, password } = getLocalStorageCredentials() || {};
-    console.log(keepMeLoggedIn);
-    console.log(username, password);
 
     if (keepMeLoggedIn && username && password) {
       loginUser({ username, password, keepMeLoggedIn }).then();

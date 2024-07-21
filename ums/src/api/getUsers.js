@@ -7,6 +7,5 @@ export function getUsers() {
     },
   })
     .then((response) => response.json())
-    .then((users) => users)
     .catch((error) => error);
 }
