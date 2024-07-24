@@ -1,6 +1,6 @@
 import { Stack, Typography, Paper } from "@mui/material";
-import { useUsers } from "../../queries/useUsers";
 import { Pagination } from "./components";
+import { useUsers } from "../../queries/useUsers";
 
 export function AllUsers() {
   const { users, isLoadingUsers } = useUsers();

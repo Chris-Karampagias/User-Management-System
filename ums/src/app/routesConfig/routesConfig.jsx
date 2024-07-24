@@ -4,6 +4,7 @@ import {
   Homepage,
   Authentication,
   NewUser,
+  UserDetails,
 } from "../../pages";
 
 export const routesConfig = {
@@ -41,6 +42,15 @@ export const routesConfig = {
     },
     extraProps: {
       label: "All Users",
+    },
+  },
+  userDetails: {
+    browserRouter: {
+      path: `/all-users/:userId`,
+      element: <UserDetails />,
+    },
+    extraProps: {
+      dynamicPath: (userId) => `/all-users/${userId}`,
     },
   },
   changePassword: {

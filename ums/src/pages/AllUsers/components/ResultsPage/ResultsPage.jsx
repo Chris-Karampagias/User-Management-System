@@ -6,6 +6,7 @@ export function ResultsPage({ users }) {
     <UserPreviewCard
       key={user?.id}
       username={user?.username}
+      userId={user?.id}
       role={user?.role}
     />
   ));

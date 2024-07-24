@@ -18,7 +18,7 @@ export const useLogin = () => {
     mutateAsync: loginUser,
     isSuccess: logInRequestFinished,
   } = useMutation({
-    mutationFn: ({ username, password }) => getUser(username, password),
+    mutationFn: ({ username, password }) => getUser({ username, password }),
     onSuccess: (data, { keepMeLoggedIn }) => {
       const user = data?.[0];
       if (!user) {

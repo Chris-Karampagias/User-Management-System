@@ -1,13 +1,21 @@
-export function getUser(username, password) {
+export function getUser({ username, password, userId }) {
   let requestUrl;
   if (!password) {
     requestUrl = `${
       import.meta.env.VITE_STACKPRINT_BASE_URL
     }/users?username=${username}`;
-  } else {
+  }
+
+  if (username && password) {
     requestUrl = `${
       import.meta.env.VITE_STACKPRINT_BASE_URL
     }/users?username=${username}&password=${password}`;
+  }
+
+  if (userId) {
+    requestUrl = `${
+      import.meta.env.VITE_STACKPRINT_BASE_URL
+    }/users?id=${userId}`;
   }
 
   return fetch(requestUrl, {
