@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   IconButton,
   Stack,
@@ -10,42 +10,14 @@ import {
   MenuItem,
 } from "@mui/material";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
-import { calculateTotalPages } from "./utilities";
-import { ResultsPage } from "../../components";
 
-const getPages = (users, totalPages, resultsPerPage) => {
-  const pagesMapping = {};
-
-  let i = 1;
-  let start = 0;
-  let end = resultsPerPage;
-
-  while (i <= totalPages) {
-    if (end > users.length) {
-      end = users.length;
-    }
-    const results = users.slice(start, end);
-    pagesMapping[i] = <ResultsPage users={results} />;
-    start = end;
-    end += resultsPerPage;
-    i += 1;
-  }
-
-  return pagesMapping;
-};
-
-export function Pagination({ users }) {
+export function PaginatedList({ items, renderItem }) {
   const [pageNumber, setPageNumber] = useState(1);
   const [resultsPerPage, setResultsPerPage] = useState(3);
 
-  const totalPages = calculateTotalPages(users, resultsPerPage);
-  const pagesMapping = getPages(users, totalPages, resultsPerPage);
+  const totalPages = Math.ceil((items?.length || 0) / resultsPerPage);
 
-  useEffect(() => {
-    if (pageNumber > totalPages && totalPages > 0) {
-      setPageNumber(totalPages);
-    }
-  }, [pageNumber, totalPages]);
+  const itemsToRender = items.slice((pageNumber - 1) * resultsPerPage, pageNumber * resultsPerPage);
 
   return (
     <Stack direction="column" gap={3}>
@@ -74,6 +46,7 @@ export function Pagination({ users }) {
             defaultValue={resultsPerPage}
             onChange={(e) => {
               setResultsPerPage(e.target.value);
+              setPageNumber(1);
             }}
           >
             <MenuItem value={3}>3</MenuItem>
@@ -83,7 +56,9 @@ export function Pagination({ users }) {
           </Select>
         </FormControl>
       </Stack>
-      {pagesMapping[pageNumber]}
+      {
+        itemsToRender.map((item) => renderItem(item))
+      }
       <Stack
         direction="row"
         gap={1}

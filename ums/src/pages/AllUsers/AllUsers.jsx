@@ -1,6 +1,18 @@
 import { Stack, Typography, Paper } from "@mui/material";
-import { Pagination } from "./components";
+import { UserPreviewCard } from "./components";
 import { useUsers } from "../../queries/useUsers";
+import { PaginatedList } from "../../components";
+
+const renderItem = (user) => {
+  return (
+    <UserPreviewCard
+      key={user?.id}
+      username={user?.username}
+      userId={user?.id}
+      role={user?.role}
+    />
+  );
+};
 
 export function AllUsers() {
   const { users, isLoadingUsers } = useUsers();
@@ -10,7 +22,7 @@ export function AllUsers() {
         <Typography alignSelf="center" variant="h1" fontSize={30}>
           All Users
         </Typography>
-        <Pagination users={users} />
+        <PaginatedList items={users} renderItem={renderItem}/>
       </Stack>
     </Paper>
   );
