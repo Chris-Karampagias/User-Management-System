@@ -62,8 +62,6 @@ export function UserDetails() {
     userDeletionErrorOccured,
   } = useDeleteUser();
 
-  console.log(formDefaultValues);
-
   const {
     handleSubmit,
     control,
