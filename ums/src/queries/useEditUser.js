@@ -1,7 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-// import { useNavigate } from "react-router-dom";
 import { updateUser as updateUserApi } from "../api";
 import { updateUser } from "../models/user/actions";
 import { usePreviousLocationPathname } from "../hooks";
