@@ -12,7 +12,7 @@ export const useDeleteUser = () => {
     isSuccess: userDeletionFinished,
     isError: userDeletionErrorOccured,
   } = useMutation({
-    mutationFn: ({ userId }) => deleteUserAPI(userId),
+    mutationFn: (userId) => deleteUserAPI(userId),
     onSuccess: () => navigate(routesConfig.allUsers.browserRouter.path),
   });
 
