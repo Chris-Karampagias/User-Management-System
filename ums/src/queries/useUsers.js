@@ -5,12 +5,16 @@ import { userSelector } from "../models/user/selectors";
 
 export const useUsers = () => {
   const isUserLoggedIn = !!useSelector(userSelector).id;
-  const { data: users, isLoading: isLoadingUsers } = useQuery({
+  const {
+    data: users,
+    isLoading: isLoadingUsers,
+    isError: loadingUsersFailed,
+  } = useQuery({
     queryKey: ["users"],
     queryFn: getUsers,
     enabled: isUserLoggedIn,
     initialData: () => [],
   });
 
-  return { users, isLoadingUsers };
+  return { users, isLoadingUsers, loadingUsersFailed };
 };
