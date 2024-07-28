@@ -14,7 +14,16 @@ export const useUser = (userId) => {
   });
 
   return {
-    user: data?.length > 0 ? data[0] : {},
+    user:
+      data?.length > 0
+        ? data[0]
+        : {
+            username: "",
+            fullName: "",
+            age: "",
+            role: "",
+            password: "",
+          },
     isFetchingUser,
     userFetchError,
     userFetched,
