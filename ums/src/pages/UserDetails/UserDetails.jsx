@@ -11,7 +11,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { useUser } from "../../queries/useUser";
 import { useDeleteUser } from "../../queries/useDeleteUser";
-import { useEditUser } from "../../queries/useEditUser";
+import { useAdminEditUser } from "../../queries/useAdminEditUser";
 import { ControlledDropdown, ControlledTextField } from "../../components";
 
 const validationSchema = object({
@@ -46,26 +46,20 @@ const initialValues = {
 
 export function UserDetails() {
   const { userId } = useParams();
-  const { user, isFetchingUser, userFetchError, userFetched } = useUser(userId);
+  const { user, isFetchingUser, userFetchError } = useUser(userId);
 
   // eslint-disable-next-line no-unused-vars
   const { isPasswordSafe, id, age, ...formDefaultValues } = user;
   const valuesFromAPI = { age: age?.toString(), ...formDefaultValues };
 
-  const { editUser, isLoadingEditUser, editUserRequestFinished } =
-    useEditUser();
+  const { editUser, isUpdatingUser, userUpdateFailed } = useAdminEditUser();
 
-  const {
-    deleteUser,
-    isDeletingUser,
-    userDeletionFinished,
-    userDeletionErrorOccured,
-  } = useDeleteUser();
+  const { deleteUser, isDeletingUser, userDeletionErrorOccured } =
+    useDeleteUser();
 
   const {
     handleSubmit,
     control,
-    reset: resetForm,
     formState: { isDirty },
     watch,
   } = useForm({
@@ -76,7 +70,9 @@ export function UserDetails() {
 
   const onSubmit = (data) => {
     // eslint-disable-next-line no-unused-vars
-    const apiUserData = { id, isPasswordSafe: false, ...data };
+    const isPasswordSafe =
+      user.isPasswordSafe && data.password === user.password;
+    const apiUserData = { id, isPasswordSafe, ...data };
     editUser(apiUserData).then();
   };
 
@@ -90,62 +86,91 @@ export function UserDetails() {
           <Typography alignSelf={"center"} variant="h1" fontSize={30}>
             User Details
           </Typography>
-          <Stack direction={"column"} alignItems={"start"} gap={3}>
-            <ControlledTextField
-              label="Username"
-              control={control}
-              name="username"
-              disabled={true}
-            />
-            <ControlledTextField
-              label="Full name"
-              control={control}
-              name="fullName"
-              disabled={isLoadingEditUser}
-            />
-            <ControlledTextField
-              label="Password"
-              control={control}
-              name="password"
-              type={"password"}
-              disabled={isLoadingEditUser}
-            />
-            <ControlledTextField
-              label="Age"
-              control={control}
-              name="age"
-              type="number"
-              disabled={isLoadingEditUser}
-            />
-            <ControlledDropdown
-              name="role"
-              control={control}
-              label="User Role"
-              options={ROLE_OPTIONS}
-              disabled={isLoadingEditUser}
-            />
-          </Stack>
-          <Stack direction="row" justifyContent="space-between">
-            <Stack direction={"row"} gap={1}>
-              {isLoadingEditUser && <CircularProgress />}
-              <Button
-                variant="contained"
-                color="success"
-                type="submit"
-                disabled={!isDirty || isLoadingEditUser || isSaveDisabled}
-              >
-                Save
-              </Button>
-            </Stack>
-            <Button
-              variant="contained"
-              color="error"
-              type="button"
-              onClick={() => deleteUser(user?.id)}
-            >
-              Delete
-            </Button>
-          </Stack>
+          {isFetchingUser ? (
+            <CircularProgress sx={{ alignSelf: "center" }} size={60} />
+          ) : (
+            <>
+              {userFetchError ? (
+                <Typography textAlign="center" fontSize={20} color="error">
+                  Unable to retrieve user data. Please try again later.
+                </Typography>
+              ) : (
+                <>
+                  <Stack direction={"column"} alignItems={"start"} gap={3}>
+                    <ControlledTextField
+                      label="Username"
+                      control={control}
+                      name="username"
+                      disabled={true}
+                    />
+                    <ControlledTextField
+                      label="Full name"
+                      control={control}
+                      name="fullName"
+                      disabled={isUpdatingUser}
+                    />
+                    <ControlledTextField
+                      label="Password"
+                      control={control}
+                      name="password"
+                      type={"password"}
+                      disabled={isUpdatingUser}
+                    />
+                    <ControlledTextField
+                      label="Age"
+                      control={control}
+                      name="age"
+                      type="number"
+                      disabled={isUpdatingUser}
+                    />
+                    <ControlledDropdown
+                      label="User Role"
+                      control={control}
+                      name="role"
+                      options={ROLE_OPTIONS}
+                      disabled={isUpdatingUser}
+                    />
+                  </Stack>
+                  <Stack direction="row" justifyContent="space-between">
+                    <Stack direction={"row"} gap={1} alignItems="center">
+                      {isUpdatingUser && <CircularProgress size={20} />}
+                      <Button
+                        variant="contained"
+                        color="success"
+                        type="submit"
+                        disabled={
+                          !isDirty ||
+                          isUpdatingUser ||
+                          isSaveDisabled ||
+                          isDeletingUser
+                        }
+                      >
+                        Save
+                      </Button>
+                    </Stack>
+                    <Stack direction={"row"} alignItems="center" gap={1}>
+                      {isDeletingUser && <CircularProgress size={20} />}
+                      <Button
+                        variant="contained"
+                        color="error"
+                        type="button"
+                        onClick={() => deleteUser(user?.id)}
+                        disabled={isDeletingUser || isUpdatingUser}
+                      >
+                        Delete
+                      </Button>
+                    </Stack>
+                  </Stack>
+                </>
+              )}
+            </>
+          )}
+          {userDeletionErrorOccured ||
+            (userUpdateFailed && (
+              <Typography textAlign="center" fontSize={20} color="error">
+                An error occured during the operation
+              </Typography>
+            ))}
         </Stack>
       </form>
     </Paper>
